@@ -1,0 +1,6 @@
+---
+- name: install apache package
+  action: "{{ ansible_pkg_mgr }} name={{ apache.package_name }}-{{ apache.package_version }} state=present"
+  notify:
+    - start apache
+  tags: apache-package

@@ -1,0 +1,32 @@
+#{{ ansible_managed }}
+*nat
+:PREROUTING ACCEPT [607:42372]
+:POSTROUTING ACCEPT [381:29638]
+:OUTPUT ACCEPT [1242:94474]
+-A POSTROUTING -o eth0 -j MASQUERADE 
+COMMIT
+*filter
+:INPUT ACCEPT [15538:15469213]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [14286:5337601]
+-A INPUT -i eth0 -p udp -m udp --dport 8080 -j ACCEPT 
+-A INPUT -i eth0 -p udp -m udp --dport 162 -j ACCEPT 
+-A INPUT -i eth0 -p tcp -m tcp --dport 514 -j ACCEPT 
+-A INPUT -i eth1 -p udp -m udp --dport 8080 -j ACCEPT 
+-A INPUT -i eth1 -p tcp -m tcp --dport 514 -j ACCEPT 
+-A INPUT -i eth1 -p udp -m udp --dport 162 -j ACCEPT 
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT 
+-A INPUT -i eth0 -p tcp -m tcp --dport 8080 -j ACCEPT 
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT 
+-A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT 
+-A FORWARD -i eth1 -o eth0 -j ACCEPT 
+-A FORWARD -m physdev  --physdev-in vif8.0 -j ACCEPT 
+-A FORWARD -m physdev  --physdev-in vif11.0 -j ACCEPT 
+-A FORWARD -m physdev  --physdev-in vif7.0 -j ACCEPT 
+-A FORWARD -m physdev  --physdev-in vif5.0 -j ACCEPT 
+-A FORWARD -m physdev  --physdev-in vif4.0 -j ACCEPT 
+-A FORWARD -m physdev  --physdev-in vif5.0 -j ACCEPT 
+-A FORWARD -m physdev  --physdev-in vif1.0 -j ACCEPT 
+-A FORWARD -m physdev  --physdev-in vif1.0 -j ACCEPT 
+-A FORWARD -m physdev  --physdev-in vif1.0 -j ACCEPT 
+COMMIT

@@ -1,0 +1,7 @@
+centos_vm ansible_ssh_host=172.16.4.168
+ubuntu_vm ansible_ssh_host=172.16.4.249
+
+[server1]
+centos_vm
+[ubuntu]
+ubuntu_vm

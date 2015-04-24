@@ -1,0 +1,6 @@
+ntp:
+  package_name: ntp 
+  service_name: ntpd
+jdk:
+  package_name: java-1.7.0-openjdk
+  package_version: 1.7.0.79

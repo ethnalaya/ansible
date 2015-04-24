@@ -1,0 +1,21 @@
+---
+- name: install cobbler packages 
+  yum: name={{ item.name }}-{{ item.version }} state=present
+  with_items:
+  - {name: cobbler, version: 2.6.7}
+  - {name: cobbler-web, version: 2.6.7}
+  - {name: pykickstart, version: 1.99.43.17}
+  - {name: system-config-kickstart, version: 2.9.2}
+  - {name: tftp, version: 5.2}
+  tags: cobbler-packages
+  
+#sed '/disable/ s/yes/no/' /etc/xinetd.d/tftp   
+- name: update tftp configuration file
+  lineinfile: dest=/etc/xinetd.d/tftp
+              state=present
+              regexp=disable
+              line="        disable                 = no"
+  tags: update-tftp
+  
+    
+      

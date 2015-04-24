@@ -1,0 +1,27 @@
+---
+# file: site.yml
+- hosts: all
+  roles:
+    - base
+  sudo: yes
+  vars_files:
+    - "group_vars/{{ ansible_os_family }}.yml"
+  vars:
+    user_name: root
+    group_name: root
+
+- hosts: server1
+  roles:
+    - server1
+  sudo: yes
+  vars_files:
+    - "group_vars/{{ ansible_os_family }}.yml"
+    - "roles/base/defaults/main.yml"
+  vars:
+    user_name: root
+    group_name: root
+
+- hosts: bare_metals
+  tasks:
+  - name: install virtualbox package
+    action: "{{ ansible_pkg_mgr }} pkg=virtualbox state=present"

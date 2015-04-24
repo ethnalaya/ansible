@@ -1,0 +1,5 @@
+---
+#For Debian Family
+ntp:
+  package_name: ntp
+  service_name: ntp

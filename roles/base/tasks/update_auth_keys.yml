@@ -1,0 +1,10 @@
+---
+
+- name: create .ssh directory
+  file: dest=/{{user_name}}/.ssh state=directory owner={{user_name}} group={{group_name}} mode=0700
+  
+- name: append authorized_key file
+  copy: src=controlmaster.pub dest=/{{user_name}}/.ssh/authorized_keys mode=0640 owner={{user_name}} group={{group_name}}
+
+- name: update sudoers for with no password change
+  lineinfile: "dest=/etc/sudoers state=present regexp='^%wheel' line='%wheel ALL=(ALL) NOPASSWD: ALL'"

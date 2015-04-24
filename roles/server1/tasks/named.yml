@@ -1,0 +1,6 @@
+#Purpose: Installs DNS servers and completes DDNS Cycle
+- name: Install bind package
+  action: "{{ ansible_pkg_mgr }} name=bind state=present"
+  notify:
+    - start dns
+  tags: dns-package

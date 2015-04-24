@@ -1,0 +1,4 @@
+next_server: 192.168.0.1
+dhcp_leases:
+  - {name: vmserver,  ipaddress: 192.168.0.2, macaddress: "70:71:bc:d5:7f:44"}
+  - {name: appleseed, ipaddress: 192.168.0.3, macaddress: "68:5b:35:d1:0c:64"}

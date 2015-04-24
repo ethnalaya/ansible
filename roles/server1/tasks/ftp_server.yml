@@ -1,0 +1,10 @@
+---
+- name: install vstpd service
+  action: "{{ ansible_pkg_mgr }} name={{ ftp.package_name }}-{{ ftp.package_version }} state=present"
+  tags: ftp-package
+
+- name: update vstpd conf file
+  copy: "src=vsftpd.conf dest=/etc/vsftpd/vsftpd.conf owner={{ user_name }} group={{ group_name }} force=yes"
+  notify:
+  - restart ftp
+  tags: ftp-confs

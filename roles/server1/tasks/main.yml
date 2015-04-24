@@ -1,0 +1,12 @@
+---
+#Main tasker for server1 role
+- include: ftp_server.yml                                 # Install FTP Service, Tags: ftp-package, ftp-confs, ftp-service
+- include: ../../base/tasks/openjdk.yml
+- include: apache.yml
+- include: dhcp_server.yml                                # Install DHCP service, Tags: dhcp-package,dhcp-confs,dhcp-service 
+- include: jenkins_server.yml
+- include: iptables.yml
+  when: ansible_os_family == 'RedHat'
+#- include: named.yml
+- include: cobbler.yml
+  when: ansible_os_family == 'RedHat'

@@ -1,0 +1,6 @@
+---
+- name: install openjdk version
+  action: "{{ ansible_pkg_mgr }} name={{ item }}-{{ jdk.package_version }} state=present"
+  with_items:
+    - "{{ jdk.package_name }}"
+    - "{{ jdk.package_name}}-headless"

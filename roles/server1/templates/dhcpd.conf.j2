@@ -1,0 +1,51 @@
+#{{ ansible_managed }}
+authorative;
+server-identifier myserver;
+use-host-decl-names on;
+ddns-hostname = pick-first-value(ddns-hostname,option host-name,concat("node",suffix(binary-to-ascii(10,8,"",leased-address),2)));
+ddns-domainname "example.com";
+ddns-update-style interim;
+update-static-leases on;
+ddns-updates on;
+allow client-updates;
+key ddns_key {
+  algorithm hmac-md5;
+  secret "nkU8NVsyL0enLXLRfQwm49JWh5aXwGwEoenK1ODHFUnx75oMyV1dSMXPRWG7";
+}	
+zone example.com {
+	primary 192.168.0.1;
+	key ddns_key;
+}
+ zone 0.168.192.in-addr.arpa {
+        primary 192.168.0.1;
+	key ddns_key;
+}
+
+subnet 192.168.0.0 netmask 255.255.255.0 {
+
+# --- default gateway
+	option routers			192.168.0.1;
+	option subnet-mask		255.255.255.0;
+
+	option nis-domain		"Internal";
+	option domain-name		"example.com";
+	option domain-name-servers	192.168.0.1,203.145.184.13;
+
+	option time-offset		-18000;	# Eastern Standard Time
+	option ntp-servers		192.168.0.1;
+	
+	range dynamic-bootp 192.168.0.1 192.168.0.50;
+	default-lease-time 21600;
+	max-lease-time 43200;
+	filename "/pxelinux.0";
+	next-server {{ next_server }};
+	#filename "/kickstart/ks.cfg";
+{% for each_host in dhcp_leases %}
+	host {{ each_host.name }} {
+	 hardware ethernet {{ each_host.macaddress }};
+	 fixed-address {{ each_host.ipaddress }};
+	 next-server {{ next_server }};
+	 ddns-hostname "{{ each_host.name }}";
+	}
+{% endfor %}
+}

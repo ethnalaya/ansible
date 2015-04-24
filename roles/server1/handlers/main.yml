@@ -1,0 +1,43 @@
+---
+#FTP Service
+- name: start ftp
+  service: "name={{ ftp.service_name }} state=started enabled=true"
+  tags: ftp-service
+  
+- name: restart ftp
+  service: "name={{ ftp.service_name }} state=restarted"
+  tags: ftp-service
+#DHCP Service
+- name: start dhcp
+  service: "name={{ dhcp.service_name }} state=started enabled=true"
+  tags: dhcp-service
+
+- name: restart dhcp
+  service: "name={{ dhcp.service_name }} state=restarted"
+  tags: dhcp-service
+#Apache Service
+- name: start apache
+  service: "name={{ apache.service_name }} state=started enabled=true"
+
+- name: restart apache
+  service: "name={{ apache.service_name }} state=restarted"
+#Jenkins Service
+- name: start jenkins
+  service: name=jenkins state=started enabled=true
+
+- name: restart jenkins
+  service: name=jenkins state=restarted
+#Iptables Service
+- name: start iptables 
+  service: name=iptables state=started enabled=true
+
+- name: restart iptables
+  service: name=iptables state=restarted
+#DNS Service
+- name: start dns
+  service: name=named state=started enabled=true
+  tags: dns-service
+
+- name: restart dns
+  service: name=named state=restarted
+  tags: dns-service

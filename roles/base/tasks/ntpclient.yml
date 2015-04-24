@@ -1,0 +1,7 @@
+---
+- name: install ntpclient package
+  action: "{{ ansible_pkg_mgr }} pkg={{ ntp.package_name }} state=present"
+  notify:
+   - start ntp
+  tags: ntp-package
+ 
