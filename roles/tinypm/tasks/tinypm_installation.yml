@@ -1,0 +1,65 @@
+- name: setup mysql database 
+  copy: "src=tinypmdb.sql dest={{ var.cache.path}}/tinypmdb.sql force=yes"
+  tags: tinypm-installation
+
+- name: create db
+  shell: "mysql --user={{ user_name }} < {{var.cache.path}}/tinypmdb.sql > {{var.cache.path}}/tinpmdb.sql.out creates={{var.cache.path}}/tinpmdb.sql.out"
+  tags: tinypm-installation 
+
+- name: download tinypm 
+  get_url: "url=https://s3.amazonaws.com/tinypm.com-downloads/tinypm-{{ tinypm.version }}-onsite.war dest={{ var.cache.path }}/tinypm-{{ tinypm.version }}-onsite.war"
+  tags: tinypm-installation
+
+- name: create deploy directory 
+  file: "dest={{ tomcat.base_directory }}/tomcat/webapps/tinypm owner={{ tomcat.user_name }} group={{ tomcat.group_name }} mode=0755 state=directory"
+  tags: tinypm-installation
+
+- name: deploy tinypm 
+  shell: "unzip -n -q -d {{ tomcat.base_directory}}/tomcat/webapps/tinypm {{ var.cache.path}}/tinypm-{{ tinypm.version }}-onsite.war creates={{ tomcat.base_directory }}/webapps/tinypm/{{ tinypm.config_file }}"
+  tags: tinypm-installation
+
+- name: update database_schemas
+  shell: "mysql -A tinypm3 < {{ tomcat.base_directory}}/tomcat/webapps/tinypm/WEB-INF/sql-on-site/create.sql > {{ var.cache.path }}/tinypm_schemas.out creates={{ var.cache.path }}/tinypm_schemas.out"
+  tags: tinypm-installation
+
+- name: create tinypm configuration directories
+  file: "dest={{ item }} recurse=yes state=directory mode=0755 owner={{ tomcat.user_name }} group={{ tomcat.group_name }}"
+  with_items:
+    - "{{ tinypm.upload_dir }}"
+    - "{{ tinypm.index_dir }}"
+  tags: tinypm-installation
+
+- name: update configurations
+  lineinfile: "dest={{ tomcat.base_directory }}/tomcat/webapps/tinypm/{{ tinypm.config_file }} regexp='{{ item.from }}' line='{{ item.to }}' state=present"
+  with_items: tinypm.config_updates
+  tags: tinypm-installation
+
+- name: link Mysql Connector 
+  file: "src={{ tomcat.base_directory}}/tomcat/webapps/tinypm/WEB-INF/lib/mysql-connector-java-5.1.13.jar dest={{ tomcat.base_directory }}/tomcat/lib/mysql-connector-java-5.1.13.jar state=link"
+  tags: tinypm-installation
+   
+- name: update catalina script
+  lineinfile: "dest={{ tomcat.base_directory}}/tomcat/bin/catalina.sh regexp='^#JAVA_OPTS' line='export JAVA_OPTS=\"{{ tomcat.java_opts }}\"' state=present"
+  notify:
+    - restart tomcat
+  tags: tinypm-installation
+
+- name: enable modules
+  file: "src={{ apache.base_directory }}/mods-available/{{ item.source }}.load dest={{ apache.base_directory }}/mods-enabled/{{ item.dest }}.load state=link"
+  with_items:
+     - { source: 'proxy',               dest: 'proxy' }
+     - { source: 'proxy_http',          dest: 'proxy_http' }   
+  notify: 
+    - restart apache
+  tags: tinypm-installation
+- name: update tinypm apache conf file
+  template: "src=tinypm.conf.j2 dest={{ apache.base_directory }}/sites-available/tinypm.conf mode=0644 force=yes"
+  notify:
+    - restart apache
+  tags: tinypm-installation
+  
+- name: enable tinypm site 
+  file: "src={{ apache.base_directory }}/sites-available/tinypm.conf dest={{ apache.base_directory }}/sites-enabled/tinypm.conf state=link"
+  notify:
+    - restart apache
+  tags: tinypm-installation

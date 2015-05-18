@@ -1,0 +1,26 @@
+---
+- include: git.yml
+  tags: tracgit
+- include: ../../server1/tasks/apache.yml
+  tags: tracgit 
+- include: trac.yml
+  tags: tracgit
+
+- name: enable git code browser
+  lineinfile: "dest={{ trac.base_directory }}/{{ trac.project_name }}/conf/trac.ini line='{{ item }}' state=present"
+  with_items:
+    - "[components]"
+    - "tracopt.versioncontrol.git.* = enabled"
+    - "[git]"
+    - "git_bin=/usr/bin/git"
+  tags: tracgit
+  
+- name: Integrate git with trac
+  lineinfile: "dest={{ trac.base_directory }}/{{ trac.project_name }}/conf/trac.ini  regexp='{{ item.from }}' line='{{ item.to }}' owner={{ apache.service_user }} state=present"
+  with_items: tracgit.conf_updates
+  tags: tracgit
+
+- name: updating project logo
+  copy: "src=ethnalaya.jpg dest={{ trac.base_directory }}/{{ trac.project_name }}/htdocs/ethnalaya.jpg force=yes"
+  tags: tracgit
+  

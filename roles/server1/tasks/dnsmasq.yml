@@ -1,0 +1,20 @@
+---
+- name: install dnsmasq package 
+  action: "{{ ansible_pkg_mgr }} pkg=dnsmasq state=present"
+  notify:
+    - start dnsmasq
+  tags: dnsmasq-package
+    
+- name: update dnsmasq configurations
+  template: src=dnsmasq.conf.j2 dest=/etc/dnsmasq.conf force=yes
+  notify:
+    - restart dnsmasq
+  tags: dnsmasq-confs
+
+- name: update dns ports
+  firewalld: "port=53/{{ item }} state=enabled permenant=true zone= {{ firewall_zone }}"
+  with_items:
+    - tcp
+    - udp
+  when: ansible_os_family == 'RedHat'
+  tags: dnsmasq-confs

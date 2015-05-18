@@ -1,0 +1,25 @@
+---
+- include: ../../server1/handlers/main.yml
+- name: start tomcat
+  service: name=tomcat state=started enabled=true
+  tags: tomcat-service
+  
+- name: restart tomcat
+  service: name=tomcat state=restarted
+  tags: tomcat-service,tinypm-installation
+
+- name: stop tomcat
+  service: name=tomcat state=stoped
+  tags: tomcat-service
+#MySQL
+- name: start mysql
+  service: name=mysql state=started enabled=true
+  tags: mysql-service
+  
+- name: restart mysql
+  service: name=mysql state=restarted
+  tags: mysql-service
+
+- name: stop mysql
+  service: name=mysql state=stoped
+  tags: mysql-service

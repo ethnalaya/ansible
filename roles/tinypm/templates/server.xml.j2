@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Server port="{{ tomcat.shutdown_port }}" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <Listener className="org.apache.catalina.core.JasperListener" />
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+
+  <GlobalNamingResources>
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+  </GlobalNamingResources>
+
+  <Service name="Catalina">
+
+    <Executor name="tomcatThreadPool" namePrefix="catalina-exec-"
+        maxThreads="{{ tomcat.max_threads }}" minSpareThreads="{{ tomcat.min_spare_threads }}" />
+
+    <Connector executor="tomcatThreadPool"
+               port="{{ tomcat.app_port }}" protocol="HTTP/1.1"
+               connectionTimeout="{{ tomcat.connection_timeout }}"
+               redirectPort="{{ tomcat.redirect_port }}"  server="server"/>
+    <!--
+    <Connector port="{{ tomcat.redirect_port }}" protocol="HTTP/1.1" SSLEnabled="true"
+               maxThreads="{{ tomcat.max_threads }}" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS" />
+    -->
+    <Connector port="{{ tomcat.connector_port }}" protocol="AJP/1.3" redirectPort="{{ tomcat.redirect_port }}" />
+    <Engine name="Catalina" defaultHost="localhost">
+      <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+               resourceName="UserDatabase"/>
+      </Realm>
+      <Host name="localhost"  appBase="webapps" unpackWARs="true" autoDeploy="true" unDeployOldVersions="true">
+       <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs/access-logs"
+               prefix="access." pattern='%t splunk_system="access_log"  uri="%U" referer="%{Referer}i" 
+               user_agent="%{User-agent}i" Noodle="%{Noodle}i" GSID="%{GSID}C" remote_ip="%a" method="%m" status="%s" 
+               size="%b" milli_seconds="%D"' suffix=".log" rotatable="true" resolveHosts="false"/>
+      </Host>
+    </Engine>
+  </Service>
+</Server>

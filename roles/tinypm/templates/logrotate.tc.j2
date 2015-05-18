@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+{{ tomcat.base_directory }}/tomcat/logs/catalina.out {
+    copytruncate
+    daily
+    rotate 5
+    compress
+    missingok
+    size 500M
+}

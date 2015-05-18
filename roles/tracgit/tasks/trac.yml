@@ -1,0 +1,55 @@
+---
+  - name: install pip
+    action: "{{ ansible_pkg_mgr }} name={{ item }} state=present"
+    with_items:
+      - python-pip
+      - python-passlib
+      - libapache2-mod-python
+    tags: trac-install
+  
+  - name: install trac
+    shell: "pip install --upgrade {{ item.name }}=={{ item.version }}; touch {{ var.cache.path }}/.{{ item.name }} creates={{ var.cache.path }}/.{{ item.name }}"
+    with_items:
+      - { name: Trac,     version: '1.0.5'}
+      - { name: Babel,    version: '1.3'  }
+    tags: trac-install
+  
+  - name: Create Trac project directories
+    file: "name={{ trac.base_directory }}/{{ trac.project_name }}  owner={{ apache.service_owner }} state=directory recurse=true mode=0755"
+    tags: trac-confs
+  
+  - name: Initiate Trac Environment
+    shell: "trac-admin {{ trac.base_directory }}/{{ trac.project_name }} initenv {{ trac.project_name }} sqlite:db/trac.db creates={{ trac.base_directory }}/{{ trac.project_name }}/README"
+    tags: trac-confs
+    
+  - name: Create admin account
+    shell: "trac-admin {{ trac.base_directory }}/{{ trac.project_name }} permission add {{ trac.admin }} TRAC_ADMIN; touch {{ var.cache.path }}/.admin creates={{ var.cache.path }}/.admin"
+    tags: trac-confs
+    
+  - name: Adding htpasswd users
+    htpasswd: "path={{ trac.base_directory }}/{{ trac.project_name }}/.htpasswd name={{ trac.admin }}  password={{ trac.admin }} owner={{ apache.service_owner }} group={{ apache.service_group }}"
+    tags: trac-confs
+    
+  - name: enable Python apache module
+    file: "src={{ apache.base_directory }}/mods-available/{{ item}}.load  dest={{ apache.base_directory }}/mods-enabled/{{ item }}.load state=link"
+    with_items:
+      - python
+    notify:
+      - restart apache
+    tags: trac-confs
+  
+  - name: Remove default site of apache
+    file: "dest={{ apache.base_directory }}/sites-enabled/000-default.conf state=absent"
+    tags: trac-confs
+  
+  - name: update trac apache conf file
+    template: "src=trac.conf.j2 dest={{ apache.base_directory }}/sites-available/trac.conf force=yes"
+    notify:
+      - restart apache
+    tags: trac-confs
+    
+  - name: enable trac project
+    file: "src={{ apache.base_directory }}/sites-available/trac.conf dest={{ apache.base_directory }}/sites-enabled/trac.conf state=link"
+    notify:
+      - restart apache
+    tags: trac-confs

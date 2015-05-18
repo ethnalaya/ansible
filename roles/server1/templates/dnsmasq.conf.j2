@@ -1,0 +1,44 @@
+#{{ ansible_managed }}
+# Refrer main.yml for variable(s) from current role
+# blocks in-complete requests
+domain-needed
+# prevents non-routable private address
+bogus-priv
+# setting private domain
+domain={{ domain_name }}
+# adds the domain name to your hostnames.
+expand-hosts
+# ensures that queries for your private domain
+local=/example.com/
+# Interface dnsmasq enabled on
+listen-address=127.0.0.1
+# Interface dnsmasq enabled on
+listen-address={{ base_server }}
+# Ensure Dnsmasq will listen only to the addresses specified with liste-address
+bind-interfaces
+########################
+# DHCP Server Settings #
+########################
+# DHCP Leasing range
+dhcp-range={{ network_class }}.{{ min_range }},{{ network_class }}.{{ max_range }},9h
+dhcp-option=option:router,{{ base_server }}
+dhcp-option=option:dns-server,{{ base_server }}
+dhcp-option=option:ntp-server,{{ base_server }}			
+{% for each_host in dhcp_leases %}
+dhcp-host={{ each_host.macaddress }},{{ each_host.name }},{{ each_host.ipaddress }}
+{% endfor %}
+##########################
+## DNS Server Section   ##
+##########################
+server=202.56.215.28
+server=202.56.215.29
+mx-host={{ domain_name }},{{ base_server }}.{{ domain_name }},10
+{%for each_cname in cname_records %}
+cname={{ each_cname.name }},{{ each_cname.resolved_to }}
+{%endfor%}
+##########################
+### PXE Server Setup #####
+##########################
+#pxe-prompt="Press F8 for boot menu...",60
+#pxe-service=x86PC, "Install Centos 7 from network server {{ base_server }}",pxelinux
+#enable-tftp

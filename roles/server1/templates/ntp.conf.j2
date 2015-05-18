@@ -1,0 +1,11 @@
+#{{ ansible_managed }}
+restrict default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
+restrict ::1
+restrict default ignore
+restrict {{ network_class }}.0 mask {{ subnet_mask }} nomodify notrap
+restrict 127.0.0.1
+server  127.127.1.0 # local clock
+fudge   127.127.1.0 stratum 10
+driftfile /var/lib/ntp/ntp.drift
+logfile /var/log/ntp.log

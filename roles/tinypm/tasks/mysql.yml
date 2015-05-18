@@ -1,0 +1,9 @@
+---
+  - name: install mysql packages
+    action: "{{ ansible_pkg_mgr }} pkg={{ item }} state=present"
+    with_items:
+      mysql.packages
+    notify:
+      - start mysql
+    tags: mysql-packages
+  

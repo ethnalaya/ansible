@@ -1,0 +1,15 @@
+---
+- include: mysql.yml
+  tags: tinypm-instalation
+  
+- include: ../../base/tasks/openjdk.yml
+  tags: tinypm-installation
+
+- include: ../../server1/tasks/apache.yml
+  tags: tinypm-installation
+    
+- include: tomcat7.yml
+  tags: tinypm-installation
+
+- include: tinypm_installation.yml
+  tags: tinypm-installation

@@ -1,0 +1,10 @@
+#{{ ansible_managed }}
+<VirtualHost *:80>
+   ServerName {{ tinypm.site_name }}
+   ProxyPass /{{ tinypm.app_name }} http://localhost:8080/{{ tinypm.app_name }}
+   ProxyPassReverse /{{ tinypm.app_name }} http://localhost:8080/{{ tinypm.app_name }}
+<Location /{{ tinypm.app_name }}>
+	Order allow,deny
+	Allow from all
+</Location>
+</VirtualHost>

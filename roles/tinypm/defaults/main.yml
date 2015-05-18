@@ -1,0 +1,14 @@
+tinypm:
+  version: 3.1.9
+  app_name: tinypm
+  site_name: tinypm.example.com
+  upload_dir: /opt/tinypm/uploads
+  index_dir: /var/tinypm/indexer
+  config_file: WEB-INF/classes/tinypm-onsite.properties
+  config_updates:
+  - { from: 'tinypm.admin.email',                    to: 'tinypm.admin.email = vlnrajeshj@gmail.com' }
+  - { from: 'dataSource.username',                   to: 'dataSource.username = tinypm' }
+  - { from: 'dataSource.password',                   to: 'dataSource.password = tinypm' }  
+  - { from: 'tinypm.upload.dir',                     to: 'tinypm.upload.dir = /opt/tinypm' }  
+  - { from: 'searchable.compassConnection',          to: 'searchable.compassConnection = /var/tinypm' }
+  - { from: 'grails.serverURL',                      to: 'grails.serverURL = http://tinypm.example.com:8080/tinypm'}

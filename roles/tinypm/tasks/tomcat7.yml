@@ -1,0 +1,45 @@
+---
+- name: create base directory
+  file: "dest={{ tomcat.base_directory }} recurse=yes state=directory"
+  tags: tomcat-installation
+
+- name: create tomcat group
+  group: "name={{ tomcat.group_name }} state=present"
+  tags: tomcat-installation
+
+- name: create tomcat user
+  user: "name={{ tomcat.user_name }} group={{ tomcat.group_name }} shell=/bin/bash comment='Tomcat_User' system=yes state=present" 
+  tags: tomcat-installation
+
+- name: Identifying Tomcat download URL 
+  set_fact:
+    uri="http://archive.apache.org/dist/tomcat/tomcat-{{ tomcat.major_version }}/v{{ tomcat.full_version }}/bin/apache-tomcat-{{ tomcat.full_version }}.tar.gz"   
+  tags: tomcat-installation
+  
+- name: download tomcat from remote
+  get_url: "url={{ uri }} dest={{ var.cache.path }}/apache-tomcat-{{ tomcat.full_version }}.tar.gz"
+  tags: tomcat-installation
+  
+- name: extract tomcat only if there is a change in tar file
+  command: "chdir={{ var.cache.path }} /bin/tar xzf apache-tomcat-{{ tomcat.full_version }}.tar.gz -C {{ tomcat.base_directory }} --transform 's/apache-tomcat-{{ tomcat.full_version }}/tomcat/' creates={{ tomcat.base_directory}}/tomcat"
+  tags: tomcat-installation
+  
+- name: change permsissions of tomcat
+  file: "dest={{ tomcat.base_directory }}/tomcat owner={{ tomcat.user_name }} group={{ tomcat.group_name }} recurse=yes"
+  tags: tomcat-installation
+
+- name: add tomcat init script
+  template: src=init.j2 dest=/etc/init.d/tomcat owner=root group=root mode=0755
+  notify:
+    - start tomcat
+  tags: tomcat-installation
+
+- name: update tomcat server.xml and restart tomcat service if applicable
+  template: "src=server.xml.j2 dest={{ tomcat.base_directory }}/tomcat/conf/server.xml owner={{ tomcat.user_name }} group={{ tomcat.group_name }} mode=0600 force=yes"
+  notify:
+    - restart tomcat
+  tags: tomcat-configuration
+  
+- name: add logrotate for tomcat and restart tomcat service if applicable
+  template: src=logrotate.tc.j2 dest=/etc/logrotate.d/tomcat mode=0644 force=yes
+  tags: tomcat-configuration

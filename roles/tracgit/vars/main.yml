@@ -1,0 +1,20 @@
+trac:
+  base_directory: /opt/trac
+  project_name: ethnalaya
+  server_name: tracgit.example.com
+  admin: admin
+git:
+  user_name: git
+  group_name: git
+  home_directory: /home/git
+  project_dirs:
+    - { name: ethnalaya,        location: /opt/gitserver/ethnalaya }
+tracgit:
+  conf_updates:
+    - { from: 'repository_type =',  to: 'repository_type = git' }
+    - { from: 'repository_dir =',   to: 'repository_dir =  /opt/gitserver/ethnalaya.git' }
+    - { from: 'alt =',              to: 'alt =Ethnalaya Project Repo' }
+    - { from: 'height = ',          to: 'height = 80' }
+    - { from: 'link = ',            to: 'link = wiki' }
+    - { from: 'src = ',             to: 'src = site/ethnalaya.jpg'}
+    - { from: 'width =',           to: 'width = 300' }  

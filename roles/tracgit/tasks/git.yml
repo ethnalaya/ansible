@@ -1,0 +1,41 @@
+---
+- name: install git binary packages
+  action: "{{ ansible_pkg_mgr }} name={{ item }} state=present"
+  with_items:
+    - git
+    - git-core
+  tags: git-install
+
+- name: create git group
+  group: "name={{ git.group_name }} state=present"
+  tags: git-confs
+  
+- name: create git user
+  user: "name={{ git.user_name }} group={{ git.group_name }} system=yes state=present"
+  tags: git-confs
+  
+- name: create ssh directory
+  file: "dest={{ git.home_directory }}/.ssh recurse=true owner={{ git.user_name }} group={{ git.group_name }} state=directory"
+  tags: git-confs
+
+- name: update authorized_keys 
+  authorized_key: user={{ git.user_name }} key="{{ item }}"
+  with_file:
+    - public_keys/rajeshj.pub
+  tags: git-confs
+  
+- name: creating project_directory
+  file: "dest={{ item.location }}.git recurse=true owner={{ git.user_name }} group={{ apache.service_group }} state=directory"
+  with_items: git.project_dirs 
+  tags: git-confs
+  
+- name: initialize git project
+  shell: "git --bare init chdir={{ item.location }}.git creates={{ item.location }}.git/config"
+  sudo_user: "{{ git.user_name }}"
+  with_items: git.project_dirs
+  tags: git-confs
+  
+- name: create git project post-hook
+  file: "src={{ item.location }}.git/hooks/post-update.sample dest={{ item.location }}.git/hooks/post-update state=link mode=0777"
+  with_items: git.project_dirs
+  tags: git-confs

@@ -1,0 +1,24 @@
+# {{ ansible_managed }}
+<VirtualHost *:80>
+  ServerName {{ trac.server_name }}
+  <Location />
+     SetHandler mod_python
+     PythonInterpreter main_interpreter
+     PythonHandler trac.web.modpython_frontend
+     PythonOption TracEnv {{ trac.base_directory }}/{{ trac.project_name }}
+     PythonOption TracEnvParentDir {{ trac.base_directory }}/{{ trac.project_name }}
+     PythonOption TracUriRoot /
+     PythonOption TracEnv {{ trac.base_directory }}/{{ trac.project_name }}
+      # PythonOption TracEnvIndexTemplate {{ trac.base_directory }}/{{ trac.project_name }}/templates/index-template.html
+     PythonOption TracLocale en_US.UTF8
+     PythonOption PYTHON_EGG_CACHE /tmp
+     Order allow,deny
+     Allow from all
+  </Location>
+  <Location /login>
+    AuthType Basic
+    AuthName "{{trac.project_name | upper }}"
+    AuthUserFile {{ trac.base_directory }}/{{ trac.project_name }}/.htpasswd
+    Require valid-user
+  </Location>
+</VirtualHost>

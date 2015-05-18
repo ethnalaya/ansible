@@ -1,0 +1,18 @@
+---
+- name: install ntp package
+  action: "{{ ansible_pkg_mgr }} pkg={{ ntp.package_name }}-{{ ntp.package_version }} state=present"
+  notify:
+    - start ntp
+  tags: ntp-server-package
+  
+- name: update ntp-server configurations
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf force=yes
+  notify:
+    - restart ntp
+  tags: ntp-server-confs
+
+- name: update firewall settings 
+  firewalld: "service=ntp permanent=true zone={{ firewall_zone}} state=enabled"
+  when: ansible_os_family == 'RedHat'
+  tags: ntp-server-confs
+ 

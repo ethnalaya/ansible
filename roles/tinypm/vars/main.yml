@@ -1,0 +1,15 @@
+tomcat:
+  user_name: tomcat
+  group_name: tomcat
+  major_version: 7
+  full_version: 7.0.55
+  base_directory: /opt/usr
+  max_threads: 150
+  min_spare_threads: 4
+  app_port: 8080
+  shutdown_port: 8085
+  ssl_port: 8089
+  redirect_port: 8443
+  connector_port: 8009
+  connection_timeout: 20000
+  java_opts: "-server -Xms1024m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+UseParallelGC"

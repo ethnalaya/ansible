@@ -1,0 +1,4 @@
+ yum install openldap openldap-clients openldap-servers
+ /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
+ chown ldap. DB_CONFIG 
+ {SSHA}/0hgAdW3k8S/Im0nyZ+MzdNiy8M75Q0y

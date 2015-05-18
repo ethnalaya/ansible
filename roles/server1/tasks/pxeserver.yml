@@ -1,0 +1,11 @@
+---
+- name: install syslinux package
+  action: "{{ ansible_pkg_mgr }} pkg=syslinux state=present"
+  tags: pxe-server
+
+- name: install tftp package
+  action: "{{ ansible_pkg_mgr }} pkg=tftp-server state=present"
+  tags: pxe-server
+
+- name: 
+
