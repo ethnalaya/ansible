@@ -1,4 +1,12 @@
 ---
+#NTP Service
+- name: start ntp
+  service: "name={{ ntp.service_name }} state=started enabled=true"
+  tags: ntp-service
+  
+- name: restart ntp
+  service: "name={{ ntp.service_name }} state=restarted"
+  tags: ntp-service
 #FTP Service
 - name: start ftp
   service: "name={{ ftp.service_name }} state=started enabled=true"
@@ -18,9 +26,12 @@
 #Apache Service
 - name: start apache
   service: "name={{ apache.service_name }} state=started enabled=true"
-
+  tags: apache-service, tinypm-configuration
+  
 - name: restart apache
   service: "name={{ apache.service_name }} state=restarted"
+  tags: apache-service, tinypm-configuration
+  
 #Jenkins Service
 - name: start jenkins
   service: name=jenkins state=started enabled=true
@@ -41,3 +52,14 @@
 - name: restart dns
   service: name=named state=restarted
   tags: dns-service
+- name: reload dns
+  service: name=named state=reloaded
+  tags: dns-service
+#Masq Service
+- name: start dnsmasq
+  service: "name={{ dnsmasq.service_name }} state=started enabled=true"
+  tags: dnsmasq-service
+  
+- name: restart dnsmasq
+  service: "name={{ dnsmasq.service_name }} state=restarted"
+  tags: dnsmasq-service 

@@ -15,3 +15,9 @@
   notify:
     - start jenkins
   tags: jenkins-package
+
+- name: Jenkins- apache configuration 
+  template: "src=jenkins_apache.conf.j2 dest={{ apache.base_directory }}/sites-available/jenkins.conf force=yes owner={{ user_name}} group= {{ group_name }}"
+  notify:
+    - restart apache
+  tags: jenkins-package

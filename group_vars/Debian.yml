@@ -1,5 +1,22 @@
 ---
-#For Debian Family
+#Variables
+source_functions_library: /lib/lsb/init-functions
+
+#Package Dictionaries
+jdk:
+  package_name: openjdk-7-jre
+  package_version: 7u79-2.5.5-0ubuntu0.14.04.2
 ntp:
   package_name: ntp
   service_name: ntp
+apache:
+  package_name: apache2
+  service_name: apache2
+  base_directory: /etc/apache2
+  service_owner: www-data
+  service_group: www-data
+  
+apache_modules:
+  packages:
+    - libapache2-mod-proxy-html 
+    - libxml2-dev

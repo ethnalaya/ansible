@@ -1,13 +1,1 @@
-server1 ansible_ssh_host=192.168.1.9
-vmserver ansible_ssh_host=192.168.1.3
-
-[bare_metals]
-server1
-vmserver
-
-[virtual_machines]
-node1.example.com
-
-[all_servers]
-bare_metals
-virtual_machines
+tracgit ansible_ssh_host=192.168.1.5

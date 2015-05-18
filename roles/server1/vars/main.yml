@@ -1,4 +1,44 @@
-next_server: 192.168.0.1
+firewall_zone: public
+
+##############
+#DDNS 
+##############
+domain_name: example.com
+base_server: 192.168.0.1
+network_class: 192.168.0
+subnet_mask: 255.255.255.0
+min_range: 1
+max_range: 50
+extn_dns_server_1: 202.56.215.28
+extn_dns_server_2: 202.56.215.29
+
 dhcp_leases:
-  - {name: vmserver,  ipaddress: 192.168.0.2, macaddress: "70:71:bc:d5:7f:44"}
-  - {name: appleseed, ipaddress: 192.168.0.3, macaddress: "68:5b:35:d1:0c:64"}
+  - {name: vmserver,      ipaddress: 192.168.0.2, macaddress: "70:71:bc:d5:7f:44"}
+  - {name: appleseed,     ipaddress: 192.168.0.3, macaddress: "68:5b:35:d1:0c:64"}
+  - {name: tracgit,       ipaddress: 192.168.0.4, macaddress: "08:00:27:00:00:04"}
+cname_records:
+  - {name: pop3,            resolved_to: server1}
+  - {name: smtp,            resolved_to: server1}
+  - {name: mail,            resolved_to: server1}
+  - {name: netinstall,      resolved_to: server1}
+  - {name: jenkins,         resolved_to: server1}
+###############
+#packages
+###############
+ftp:
+  package_name: vsftpd
+  package_version: 3.0.2-9.el7
+  service_name: vsftpd
+dhcp:
+  package_name: dhcp
+  package_version: 4.2.5
+  service_name: dhcpd  
+dnsmasq:
+  package_name: dnsmasq
+  package_version: 2.66
+  service_name: dnsmasq
+################
+## Jenkins
+################
+jenkins:
+  fqdn: jenkins.example.com

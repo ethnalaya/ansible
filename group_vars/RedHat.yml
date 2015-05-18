@@ -1,2 +1,6 @@
 ---
 #for vars/CentOS
+mysql:
+  packages:
+    -{name: mariadb }
+    -{name: mariadb-libs }

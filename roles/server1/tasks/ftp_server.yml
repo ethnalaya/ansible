@@ -1,10 +1,17 @@
 ---
 - name: install vstpd service
   action: "{{ ansible_pkg_mgr }} name={{ ftp.package_name }}-{{ ftp.package_version }} state=present"
+  notify:
+  - start ftp
   tags: ftp-package
 
 - name: update vstpd conf file
   copy: "src=vsftpd.conf dest=/etc/vsftpd/vsftpd.conf owner={{ user_name }} group={{ group_name }} force=yes"
   notify:
   - restart ftp
+  tags: ftp-confs
+  
+- name: update firewall settings 
+  firewalld: "service=ftp permanent=true zone={{ firewall_zone}} state=enabled"
+  when: ansible_os_family == 'RedHat'
   tags: ftp-confs

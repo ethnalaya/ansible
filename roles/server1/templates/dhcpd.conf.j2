@@ -13,38 +13,37 @@ key ddns_key {
   secret "nkU8NVsyL0enLXLRfQwm49JWh5aXwGwEoenK1ODHFUnx75oMyV1dSMXPRWG7";
 }	
 zone example.com {
-	primary 192.168.0.1;
+	primary {{ base_server }};
 	key ddns_key;
 }
  zone 0.168.192.in-addr.arpa {
-        primary 192.168.0.1;
+        primary {{ base_server }};
 	key ddns_key;
 }
 
-subnet 192.168.0.0 netmask 255.255.255.0 {
+subnet {{ network_class }}.0 netmask {{ subnet_mask }} {
 
 # --- default gateway
-	option routers			192.168.0.1;
-	option subnet-mask		255.255.255.0;
+	option routers			{{ base_server }};
+	option subnet-mask		{{subnet_mask }} ;
 
-	option nis-domain		"Internal";
-	option domain-name		"example.com";
-	option domain-name-servers	192.168.0.1,203.145.184.13;
+	option nis-domain		"ethnalaya";
+	option domain-name		"{{ domain_name }}";
+	option domain-name-servers	{{ base_server }},{{ extn_dns_server_1 }},{{ extn_dns_server_2 }};
 
 	option time-offset		-18000;	# Eastern Standard Time
-	option ntp-servers		192.168.0.1;
+	option ntp-servers		{{ base_server }};
 	
-	range dynamic-bootp 192.168.0.1 192.168.0.50;
+	range dynamic-bootp {{ network_class }}.5 {{ network_class }}.{{ max_range }};
 	default-lease-time 21600;
 	max-lease-time 43200;
 	filename "/pxelinux.0";
-	next-server {{ next_server }};
-	#filename "/kickstart/ks.cfg";
+	next-server {{ base_server }};
 {% for each_host in dhcp_leases %}
 	host {{ each_host.name }} {
 	 hardware ethernet {{ each_host.macaddress }};
 	 fixed-address {{ each_host.ipaddress }};
-	 next-server {{ next_server }};
+	 next-server {{ base_server }};
 	 ddns-hostname "{{ each_host.name }}";
 	}
 {% endfor %}
