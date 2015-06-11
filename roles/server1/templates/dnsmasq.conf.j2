@@ -9,7 +9,9 @@ domain={{ domain_name }}
 # adds the domain name to your hostnames.
 expand-hosts
 # ensures that queries for your private domain
-local=/example.com/
+local=/{{domain_name }}/
+cache-size=1000
+
 # Interface dnsmasq enabled on
 listen-address=127.0.0.1
 # Interface dnsmasq enabled on
@@ -30,6 +32,7 @@ dhcp-host={{ each_host.macaddress }},{{ each_host.name }},{{ each_host.ipaddress
 ##########################
 ## DNS Server Section   ##
 ##########################
+server=/{{base_server}}
 server=202.56.215.28
 server=202.56.215.29
 mx-host={{ domain_name }},{{ base_server }}.{{ domain_name }},10
@@ -40,5 +43,6 @@ cname={{ each_cname.name }},{{ each_cname.resolved_to }}
 ### PXE Server Setup #####
 ##########################
 #pxe-prompt="Press F8 for boot menu...",60
-#pxe-service=x86PC, "Install Centos 7 from network server {{ base_server }}",pxelinux
-#enable-tftp
+pxe-service=x86PC, "Install Centos 7 from network server {{ base_server }}",pxelinux
+enable-tftp
+tftp-root={{pxe.base_directory}}

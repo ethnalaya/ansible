@@ -1,11 +1,13 @@
 #{{ ansible_managed }}
+include "/etc/rndc.key";
 options
 {
-	query-source    port 53;
+	listen-on port 53 { 127.0.0.1;{{base_server}}; };
 	directory           "/var/named"; // the default
 	dump-file 	        "/var/named/data/cache_dump.db";
-  statistics-file 	  "/var/named/data/named_stats.txt";
-  memstatistics-file 	"/var/named/data/named_mem_stats.txt";
+	statistics-file 	  "/var/named/data/named_stats.txt";
+	memstatistics-file 	"/var/named/data/named_mem_stats.txt";
+	allow-query { localhost;{{network_class}}.0/24; };
 };
 logging 
 {
@@ -14,30 +16,18 @@ logging
     severity dynamic;
   };
 };
-view "internal"
-{
-	match-clients		{ localnets; };
-	match-destinations	{ localnets; };
-	recursion yes;
-	zone "example.com" IN {
-		type master;
-		allow-update { key ddns_key; };
-		file "example.com.db";
-	};
-	zone "0.168.192.in-addr.arpa" IN {
-		type master;
-		allow-update { key ddns_key; };
-		file "example.com.rev.db";
-	};
-	zone "." IN {
-		type hint;
-		file "named.ca";
-	};
+
+zone "example.com" IN {
+	type master;
+	allow-update { key "rndc-key"; };
+	notify yes;
+	file "example.com.db";
 };
-key ddns_key
-	{
-		algorithm hmac-md5;
-		secret "nkU8NVsyL0enLXLRfQwm49JWh5aXwGwEoenK1ODHFUnx75oMyV1dSMXPRWG7";
-	};
-#include "/etc/named.rfc1912.zones";
+zone "0.168.192.in-addr.arpa" IN {
+	type master;
+	allow-update { key "rndc-key"; };
+	notify yes;
+	file "example.com.rev.db";
+};
+include "/etc/named.rfc1912.zones";
 include "/etc/named.root.key";

@@ -3,6 +3,10 @@
   action: "{{ ansible_pkg_mgr }} name={{ dhcp.package_name }}-{{ dhcp.package_version }} state=present"
   tags: dhcp-package
 
+- name: enable dhcp service
+  service: "name={{ dhcp.service_name }} enabled=true"
+  tags: dhcp-service
+  
 - name: update dhcp configuration file
   template: "src=dhcpd.conf.j2 dest=/etc/dhcp/dhcpd.conf owner={{ user_name }} group={{ group_name }} force=yes"
   notify:

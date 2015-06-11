@@ -8,17 +8,15 @@ ddns-update-style interim;
 update-static-leases on;
 ddns-updates on;
 allow client-updates;
-key ddns_key {
-  algorithm hmac-md5;
-  secret "nkU8NVsyL0enLXLRfQwm49JWh5aXwGwEoenK1ODHFUnx75oMyV1dSMXPRWG7";
-}	
+include "/etc/rndc.key";
+
 zone example.com {
 	primary {{ base_server }};
-	key ddns_key;
+	key "rndc-key";
 }
  zone 0.168.192.in-addr.arpa {
-        primary {{ base_server }};
-	key ddns_key;
+  primary {{ base_server }};
+	key "rndc-key";
 }
 
 subnet {{ network_class }}.0 netmask {{ subnet_mask }} {
@@ -37,7 +35,7 @@ subnet {{ network_class }}.0 netmask {{ subnet_mask }} {
 	range dynamic-bootp {{ network_class }}.5 {{ network_class }}.{{ max_range }};
 	default-lease-time 21600;
 	max-lease-time 43200;
-	filename "/pxelinux.0";
+	filename "pxelinux.0";
 	next-server {{ base_server }};
 {% for each_host in dhcp_leases %}
 	host {{ each_host.name }} {

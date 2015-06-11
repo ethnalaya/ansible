@@ -1,7 +1,4 @@
 #{{ ansible_managed }}
-restrict default kod nomodify notrap nopeer noquery
-restrict -6 default kod nomodify notrap nopeer noquery
-restrict ::1
 restrict default ignore
 restrict {{ network_class }}.0 mask {{ subnet_mask }} nomodify notrap
 restrict 127.0.0.1

@@ -1,14 +1,27 @@
 ---
 
 #Main tasker for server1 role
-- include: ntp_server.yml
-- include: ftp_server.yml                                 # Install FTP Service, Tags: ftp-package, ftp-confs, ftp-service
-- include: ../../base/tasks/openjdk.yml
-#- include: dhcp_server.yml                                # Install DHCP service, Tags: dhcp-package,dhcp-confs,dhcp-service 
-#- include: named.yml
-- include: apache.yml
-- include: dnsmasq.yml                             
-- include: jenkins_server.yml
+- include: firewall.yml                                # Update Firewall zones, Tags:firewall-settings 
+  when: ansible_os_family == 'RedHat'
+  tags: server1
+- include: ntp_server.yml                              # Install NTP Service, Tags: ntps-package,ntps-confs,ntps-service
+  tags: server1
+- include: ftp_server.yml                              # Install FTP Service, Tags: ftp-package,ftp-confs,ftp-service
+  tags: server1
+- include: ../../base/tasks/openjdk.yml                # Install OpenJDK , Tags: jdk-package
+  tags: server1
+- include: dhcp_server.yml                             # Install DHCP service, Tags: dhcp-package,dhcp-confs,dhcp-service
+  tags: server1
+- include: named.yml                                   # Install DNS Service, Tags: named-package,named-service,named-confs
+  tags: server1
+- include: apache.yml                                 # Install Apache Service, Tags: apache-package,apache-service
+  tags: server1
+##- include: dnsmasq.yml                               # Install dnsmasq Service, Tags: dnsmasq-package,dnsmasq-confs,dnsmasq-service
+##  tags: server1
+- include: pxeserver.yml                                # Install Pxe Server, Tags: pxeserver-package,pxeserver-confs
+  tags: server1
+- include: jenkins_server.yml                           # Install Jenkins Server, Tags: jenkins-package,jenkins-confs
+  tags: server1
 
 #- include: apache.yml
 #  when: ansible_os_family == 'RedHat'

@@ -23,4 +23,3 @@
 - name: updating project logo
   copy: "src=ethnalaya.jpg dest={{ trac.base_directory }}/{{ trac.project_name }}/htdocs/ethnalaya.jpg force=yes"
   tags: tracgit
-  

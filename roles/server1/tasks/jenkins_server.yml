@@ -17,7 +17,7 @@
   tags: jenkins-package
 
 - name: Jenkins- apache configuration 
-  template: "src=jenkins_apache.conf.j2 dest={{ apache.base_directory }}/sites-available/jenkins.conf force=yes owner={{ user_name}} group= {{ group_name }}"
+  template: "src=jenkins_apache.conf.j2 dest={{ apache.sites_directory }}/jenkins.conf force=yes owner={{apache.service_owner}} group={{apache.group_owner}}"
   notify:
     - restart apache
-  tags: jenkins-package
+  tags: jenkins-confs

@@ -1,6 +1,7 @@
 centos_vm ansible_ssh_host=172.16.4.168
-ubuntu_vm ansible_ssh_host=172.16.4.249
+ubuntu_vm ansible_ssh_host=172.16.4.219
 tracgit ansible_ssh_host=172.16.4.186
+icinga ansible_ssh_host=172.16.4.153
 [server1]
 centos_vm
 

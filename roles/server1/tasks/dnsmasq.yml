@@ -4,7 +4,11 @@
   notify:
     - start dnsmasq
   tags: dnsmasq-package
-    
+
+- name: enable dnsmasq service
+  service: name=dnsmasq enabled=true
+  tags: dnsmasq-confs
+  
 - name: update dnsmasq configurations
   template: src=dnsmasq.conf.j2 dest=/etc/dnsmasq.conf force=yes
   notify:
@@ -12,9 +16,9 @@
   tags: dnsmasq-confs
 
 - name: update dns ports
-  firewalld: "port=53/{{ item }} state=enabled permenant=true zone= {{ firewall_zone }}"
+  firewalld: "service={{item}} permanent=true zone={{ firewall_zone}} state=enabled"
   with_items:
-    - tcp
-    - udp
+    - dns
+    - dhcp
   when: ansible_os_family == 'RedHat'
   tags: dnsmasq-confs

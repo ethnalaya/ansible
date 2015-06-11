@@ -1,4 +1,8 @@
-firewall_zone: public
+################
+#Network
+################
+internal_interface: enp0s25
+firewall_zone: internal
 
 ##############
 #DDNS 
@@ -19,7 +23,6 @@ dhcp_leases:
 cname_records:
   - {name: pop3,            resolved_to: server1}
   - {name: smtp,            resolved_to: server1}
-  - {name: mail,            resolved_to: server1}
   - {name: netinstall,      resolved_to: server1}
   - {name: jenkins,         resolved_to: server1}
 ###############
@@ -29,6 +32,7 @@ ftp:
   package_name: vsftpd
   package_version: 3.0.2-9.el7
   service_name: vsftpd
+  base_directory: /var/ftp
 dhcp:
   package_name: dhcp
   package_version: 4.2.5
@@ -42,3 +46,10 @@ dnsmasq:
 ################
 jenkins:
   fqdn: jenkins.example.com
+  
+################
+## Pxe Server
+################
+pxe:
+  base_directory: /var/lib/tftpboot
+  centos_versions: [ 5, 7 ]

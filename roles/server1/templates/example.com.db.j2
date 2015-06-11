@@ -1,19 +1,19 @@
-;{{ ansible_managed }}
-$ORIGIN .
+;{{ansible_managed}}
 $TTL 86400	; 1 day
-example.com		IN SOA	server1. root.example.com. (
+@		IN SOA	server1. root.{{domain_name}}. (
 				703        ; serial
 				10800      ; refresh (3 hours)
 				900        ; retry (15 minutes)
 				604800     ; expire (1 week)
 				86400      ; minimum (1 day)
 				)
-			NS	btnldel-static-028.215.56.202.mantraonline.com.
-$ORIGIN example.com.
-$TTL 3600				; 1 hours
-server1						A		{{ base_server }}
-{{domain_name}}		A		{{ base_server }}
-									MX	10 {{ domain_name }}
+;Name Server Information
+@ IN NS server1.
+server1     A		{{base_server}}
+;Mail exchanger
+{{domain_name}}		IN MX 10 		mail.{{domain_name}}
+;A - Record HostName to IP Address
+mail      IN  A   {{base_server}}
 ;aliases
 {% for each_alias in cname_records %}
 {{each_alias.name}} CNAME {{each_alias.resolved_to}}

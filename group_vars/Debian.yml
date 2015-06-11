@@ -12,7 +12,7 @@ ntp:
 apache:
   package_name: apache2
   service_name: apache2
-  base_directory: /etc/apache2
+  sites_directory: /etc/apache2/sites-available
   service_owner: www-data
   service_group: www-data
   

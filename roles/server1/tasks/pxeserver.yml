@@ -1,11 +1,75 @@
 ---
 - name: install syslinux package
-  action: "{{ ansible_pkg_mgr }} pkg=syslinux state=present"
-  tags: pxe-server
+  action: "{{ ansible_pkg_mgr }} pkg={{item}} state=present"
+  with_items:
+    - syslinux
+    - tftp-server
+  tags: pxeserver-package
 
-- name: install tftp package
-  action: "{{ ansible_pkg_mgr }} pkg=tftp-server state=present"
-  tags: pxe-server
+- name: update xinitd service
+  replace: "dest=/etc/xinetd.d/tftp regexp='yes' replace='no'"
+  tags: pxeserver-confs
 
-- name: 
+- name: update tftp files
+  shell: "cp -rf /usr/share/syslinux/* {{pxe.base_directory}} creates={{pxe.base_directory}}/pxelinux.0"
+  tags: pxeserver-confs
 
+- name: create pxelinux conf directory
+  file: "path={{pxe.base_directory}}/pxelinux.cfg state=directory owner={{user_name}} group={{group_name}}"
+  tags: pxeserver-confs
+
+- name: create distribution directories
+  file: "path={{pxe.base_directory}}/images/{{item}} owner={{user_name}} group={{group_name}} recurse=true state=directory mode=0755"
+  with_items:
+    - 'centos/5'
+    - 'centos/6'
+    - 'centos/7'
+  tags: pxeserver-confs
+
+- name: copy vmlinuz and initrd images
+  get_url: "url=ftp://{{base_server}}/{{item[0]}}/images/pxeboot/{{item[1]}} dest={{pxe.base_directory}}/images/{{item[0]}}/{{item[1]}}"
+  with_nested:
+    - [ 'centos/5', 'centos/6', 'centos/7' ]
+    - [ 'vmlinuz', 'initrd.img' ]
+  tags: pxeserver-confs
+  
+- name: setup default menu configuration
+  copy: "src={{item}} dest={{pxe.base_directory}}/pxelinux.cfg/{{item}} force=yes"
+  with_items:
+    - default
+    - centos
+  notify:
+    - restart dnsmasq
+  tags: pxeserver-confs
+
+- name: setup firewall settings
+  firewalld: "port={{item}}/udp permanent=true zone={{firewall_zone}} state=enabled"
+  with_items:
+    - 69
+    - 4011
+  tags: pxeserver-confs
+  
+- name: create pxeserver directories
+  file: "dest={{ftp.base_directory}}/{{item}} owner={{user_name}} group={{group_name}} recurse=true state=directory"
+  with_items:
+    - centos/5
+    - centos/7
+    - ubuntu/14_04_32
+    - ubuntu/14_04_64
+    - kickstart
+    - repos
+  tags: pxeserver-confs
+  
+- name: update local repos
+  template: "src=centos{{item}}.repo.j2 dest={{ftp.base_directory}}/repos/centos{{item}}.repo force=yes"
+  with_items:
+    - 5
+    - 7
+  tags: pxeserver-confs
+
+- name: update kickstart files
+  template: "src=kickstart/{{item}}.j2 dest={{ftp.base_directory}}/kickstart/{{item}} force=yes"
+  with_items:
+    - centos5_baseserver.cfg
+    - centos7_baseserver.cfg
+  tags: pxeserver-confs

@@ -5,6 +5,10 @@
   - start ftp
   tags: ftp-package
 
+- name: enable ftp service 
+  service: "name={{ ftp.service_name }} state=started enabled=true"
+  tags: ftp-service
+
 - name: update vstpd conf file
   copy: "src=vsftpd.conf dest=/etc/vsftpd/vsftpd.conf owner={{ user_name }} group={{ group_name }} force=yes"
   notify:

@@ -5,13 +5,13 @@
     - start apache
   tags: apache-package
   
-- name: install apache module packages
-  action: "{{ ansible_pkg_mgr }} pkg={{ item }} state=present"
-  with_items: 
-    apache_modules.packages
-  notify:
-    - start apache
-  tags: apache-package
+#- name: install apache module packages
+#  action: "{{ ansible_pkg_mgr }} pkg={{ item }} state=present"
+#  with_items: 
+#    apache_modules.packages
+#  notify:
+#    - start apache
+#  tags: apache-package
 
 - name: Http firewall settings
   firewalld: "service=http permanent=true zone={{ firewall_zone }} state=enabled"

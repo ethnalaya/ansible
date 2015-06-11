@@ -27,8 +27,8 @@ mysql:
 apache:
   package_name: httpd
   service_name: httpd
-  base_directory: /etc/httpd
-  service_owner: httpd
-  group_owner: httpd
+  sites_directory: /etc/httpd/conf.d
+  service_owner: apache
+  group_owner: apache
 
     

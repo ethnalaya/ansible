@@ -8,7 +8,7 @@
     - "group_vars/default.yml" 
     - "group_vars/{{ ansible_os_family }}.yml"
 
-- hosts: server1.example.com
+- hosts: server1
   roles:
     - server1
   sudo: True
@@ -16,13 +16,13 @@
     - "group_vars/default.yml" 
     - "group_vars/{{ ansible_os_family }}.yml"
 
-#- hosts: tinypm
-#  roles:
-#    - tinypm
-#  sudo: True
-#  vars_files:
-#    - "group_vars/default.yml" 
-#    - "group_vars/{{ ansible_os_family }}.yml"
+- hosts: icinga
+  roles:
+    - icinga
+  sudo: True
+  vars_files:
+    - "group_vars/default.yml" 
+    - "group_vars/{{ ansible_os_family }}.yml"
 
 - hosts: tracgit
   roles:

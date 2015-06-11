@@ -3,22 +3,26 @@
   action: "{{ ansible_pkg_mgr }} name=bind state=present"
   notify:
     - start dns
-  tags: named-packages
+  tags: named-package
 
-- name: update conf file
-  template: src={{ item }}.j2 dest=/etc/named/{{ item }}  force=yes
+- name: enable named service
+  service: "name=named state=started enabled=true"
+  tags: named-service
+  
+- name: update named conf file
+  template: "src={{item}}.j2 dest=/etc/{{item}} force=yes"
   with_items:
-    - named.conf
-    - rndc.key
+    - "named.conf"
+    - "rndc.key"
   notify:
     - restart dns
   tags: named-confs
 
-- name: update zone file 
-  template: src={{ item }}.j2 dest=/var/named/{{ item }}
+- name: update named zone files 
+  template: "src={{item}}.j2 dest=/var/named/{{item}} force=no"
   with_items:
-  - example.com.db
-  - example.com.rev.db
+  - "example.com.db"
+  - "example.com.rev.db"
   notify:
     - restart dns
   tags: named-confs
@@ -28,8 +32,6 @@
   tags: named-confs
 
 - name: update dns firewall settings
-  firewalld: "service=named zone={{ firewall_zone }} permenant=true state=enabled"
-  notify:
-    - restart dns
+  firewalld: "service=dns zone={{firewall_zone}} permanent=true state=enabled"
   when : ansible_os_family == 'RedHat'
   tags: named-confs

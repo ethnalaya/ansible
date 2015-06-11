@@ -1,13 +1,12 @@
 ;{{ ansible_managed }}
-$ORIGIN .
 $TTL 86400	; 1 day
-0.168.192.in-addr.arpa	IN SOA	0.168.192.in-addr.arpa. root.0.168.192.in-addr.arpa. (
+@ IN SOA   server1. root.{{domain_name}}. (
 				5        	 ; serial
 				28800      ; refresh (3 hours)
 				7200       ; retry (15 minutes)
 				604800     ; expire (1 week)
 				86400      ; minimum (1 day)
 				)
-			NS	server1.example.com.
-$ORIGIN 0.168.192.in-addr.arpa.
-1 		PTR		server1.example.com.
+@		IN	NS	server1
+@ 	IN	PTR	example.com
+server1	IN A {{base_server}}	
