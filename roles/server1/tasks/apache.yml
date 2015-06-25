@@ -4,6 +4,10 @@
   notify:
     - start apache
   tags: apache-package
+
+- name: enable apache service
+  service: "name={{apache.service_name}} enabled=true state=started"
+  tags: apache-service
   
 #- name: install apache module packages
 #  action: "{{ ansible_pkg_mgr }} pkg={{ item }} state=present"

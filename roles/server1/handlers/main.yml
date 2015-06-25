@@ -38,6 +38,12 @@
 
 - name: restart jenkins
   service: name=jenkins state=restarted
+#Xinetd Service
+- name: start xinetd
+  service: name=xinetd state=started enabled=true
+
+- name: restart xinetd
+  service: name=xinetd state=restarted
 #DNS Service
 - name: start dns
   service: name=named state=started enabled=true

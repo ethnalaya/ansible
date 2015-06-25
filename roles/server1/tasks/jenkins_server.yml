@@ -16,6 +16,10 @@
     - start jenkins
   tags: jenkins-package
 
+- name: update selinux settings for jenkins
+  shell: "setsebool -P httpd_can_network_connect true;touch {{var.cache.path}}/.selinux-jenkins creates={{var.cache.path}}/.selinux-jenkins"
+  tags: jenkins-confs
+  
 - name: Jenkins- apache configuration 
   template: "src=jenkins_apache.conf.j2 dest={{ apache.sites_directory }}/jenkins.conf force=yes owner={{apache.service_owner}} group={{apache.group_owner}}"
   notify:

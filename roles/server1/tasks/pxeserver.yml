@@ -10,6 +10,10 @@
   replace: "dest=/etc/xinetd.d/tftp regexp='yes' replace='no'"
   tags: pxeserver-confs
 
+- name: enable xinetd service
+  service: "name=xinetd enabled=true state=started"
+  tags: pxeserver-confs
+  
 - name: update tftp files
   shell: "cp -rf /usr/share/syslinux/* {{pxe.base_directory}} creates={{pxe.base_directory}}/pxelinux.0"
   tags: pxeserver-confs
@@ -18,10 +22,24 @@
   file: "path={{pxe.base_directory}}/pxelinux.cfg state=directory owner={{user_name}} group={{group_name}}"
   tags: pxeserver-confs
 
+- name: create centos background image
+  copy: "src={{item}} dest={{pxe.base_directory}} force=yes"
+  with_items:
+    - centospxebg.png
+  tags: pxeserver-confs
+  
+- name: create pxeserver directories
+  file: "dest={{ftp.base_directory}}/{{item}} owner={{user_name}} group={{group_name}} recurse=true state=directory"
+  with_items:
+    - centos/6
+    - centos/7
+    - kickstart
+    - repos
+  tags: pxeserver-confs
+  
 - name: create distribution directories
   file: "path={{pxe.base_directory}}/images/{{item}} owner={{user_name}} group={{group_name}} recurse=true state=directory mode=0755"
   with_items:
-    - 'centos/5'
     - 'centos/6'
     - 'centos/7'
   tags: pxeserver-confs
@@ -29,7 +47,7 @@
 - name: copy vmlinuz and initrd images
   get_url: "url=ftp://{{base_server}}/{{item[0]}}/images/pxeboot/{{item[1]}} dest={{pxe.base_directory}}/images/{{item[0]}}/{{item[1]}}"
   with_nested:
-    - [ 'centos/5', 'centos/6', 'centos/7' ]
+    - [ 'centos/6', 'centos/7' ]
     - [ 'vmlinuz', 'initrd.img' ]
   tags: pxeserver-confs
   
@@ -37,11 +55,16 @@
   copy: "src={{item}} dest={{pxe.base_directory}}/pxelinux.cfg/{{item}} force=yes"
   with_items:
     - default
-    - centos
-  notify:
-    - restart dnsmasq
   tags: pxeserver-confs
 
+- name: update menu configurations
+  template: "src=pxeserver/{{item}}.j2 dest={{pxe.base_directory}}/pxelinux.cfg/{{item}} force=yes"
+  with_items:
+    - centos
+  notify:
+    - restart xinetd
+  tags: pxeserver-confs
+  
 - name: setup firewall settings
   firewalld: "port={{item}}/udp permanent=true zone={{firewall_zone}} state=enabled"
   with_items:
@@ -49,27 +72,32 @@
     - 4011
   tags: pxeserver-confs
   
-- name: create pxeserver directories
-  file: "dest={{ftp.base_directory}}/{{item}} owner={{user_name}} group={{group_name}} recurse=true state=directory"
-  with_items:
-    - centos/5
-    - centos/7
-    - ubuntu/14_04_32
-    - ubuntu/14_04_64
-    - kickstart
-    - repos
-  tags: pxeserver-confs
-  
 - name: update local repos
-  template: "src=centos{{item}}.repo.j2 dest={{ftp.base_directory}}/repos/centos{{item}}.repo force=yes"
+  template: "src=repos/centos{{item}}.repo.j2 dest={{ftp.base_directory}}/repos/centos{{item}}.repo force=yes"
   with_items:
-    - 5
+    - 6
     - 7
   tags: pxeserver-confs
 
 - name: update kickstart files
   template: "src=kickstart/{{item}}.j2 dest={{ftp.base_directory}}/kickstart/{{item}} force=yes"
   with_items:
-    - centos5_baseserver.cfg
+    - centos6_baseserver.cfg
+    - centos6_gnomedesktop.cfg
     - centos7_baseserver.cfg
+    - trusty32_srvr.seed
+  tags: pxeserver-confs
+
+# Setup Ubuntu PXE Server
+- name: create ubuntu distribution directories
+  file: "path={{pxe.base_directory}}/images/{{item}} owner={{user_name}} group={{group_name}} recurse=true state=directory mode=0755"
+  with_items:
+    - 'ubuntu/trusty_32'
+  tags: pxeserver-confs
+  
+- name: create netboot files for trusty-32
+  get_url: "src=http://archive.ubuntu.com/ubuntu/dists/{{item}}/main/installer-i386/current/images/netboot/netboot.tar.gz dest={{var.cache.path}}/{{item}}_netboot.tar.gz"   
+  with_items:
+    - 'utopic'
+    - 'trusty-updates'
   tags: pxeserver-confs
