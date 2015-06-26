@@ -1,0 +1,29 @@
+#{{ansible_managed}}
+install
+url --url ftp://{{base_server}}/centos/7
+lang en_US.UTF-8
+reboot
+keyboard --vckeymap=us --xlayouts='us'
+timezone Asia/Kolkata
+text
+eula --agreed
+services --enabled=NetworkManager,sshd
+rootpw --iscrypted $6$n1YQjTQ2NSp9VgHr$3zDkqkh2QidwHUhlsslLWu4e.zBUdFNhxIAc0Mmrea3mB90mG8hzzsxCyqVDLR0qtaIJTyE8f/7GqpiIdneyJ1
+user --groups=wheel --name=rajeshj --password=$6$uNZZmKCbRCFAjGWi$VZ7cg8iQAHDfQZTkcWhqijIjHHSAzhA9b30kQRmGDqCqtVu1E6/bn.ChEFVr/KZ53.72NdAjkaXMHEQwGim5T. --iscrypted 
+xconfig  --startxonboot
+bootloader --location=mbr
+zerombr
+clearpart --all --initlabel
+part swap --asprimary --fstype="swap" --size=1024
+part /boot --fstype xfs --size=200
+part pv.01 --size=1 --grow
+volgroup rootvg01 pv.01
+logvol / --fstype xfs --name=lv01 --vgname=rootvg01 --size=1 --grow
+%packages 
+@base
+%end
+%post
+cd /etc/yum.repos.d
+rm -rf *.repo
+wget -q -O centos7.repo ftp://{{base_server}}/repos/centos7.repo
+%end

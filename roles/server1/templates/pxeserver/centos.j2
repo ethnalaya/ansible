@@ -1,0 +1,29 @@
+DEFAULT vesamenu.c32
+MENU BACKGROUND centospxebg.png
+MENU COLOR BORDER 0 #ffffffff #00000000 std
+MENU COLOR TITLE 0 #ffffffff #00000000 std
+MENU COLOR SEL 0 #ffffffff #ff000000 std
+MENU TITLE CentOS PXE Boot Menu
+PROMPT 0
+TIMEOUT 300
+ONTIMEOUT local 
+MENU TITLE Centos
+LABEL Main Menu
+  MENU LABEL Main Menu
+  KERNEL vesamenu.c32
+  APPEND pxelinux.cfg/default
+LABEL centos6_graphics_install
+  MENU LABEL Centos-6.0-^Gnome-32 bit
+  MENU PASSWD welcome
+  kernel images/centos/6/vmlinuz
+  append initrd=images/centos/6/initrd.img  ks=ftp://{{base_server}}/kickstart/centos6_gnomedesktop.cfg
+LABEL centos6_console_install
+  MENU LABEL Centos-6.0-^Server-32 bit
+  MENU PASSWD welcome
+  kernel images/centos/6/vmlinuz
+  append initrd=images/centos/6/initrd.img  ks=ftp://{{base_server}}/kickstart/centos6_baseserver.cfg
+LABEL centos7_plain_install
+  MENU LABEL Centos-7.0-^Server-64 bit
+  MENU PASSWD welcome
+  kernel images/centos/7/vmlinuz
+  append initrd=images/centos/7/initrd.img ks=ftp://{{base_server}}/kickstart/centos7_baseserver.cfg

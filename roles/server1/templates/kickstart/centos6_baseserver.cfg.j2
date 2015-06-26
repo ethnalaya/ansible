@@ -1,0 +1,28 @@
+#{{ansible_managed}}
+install
+url --url ftp://{{base_server}}/centos/6
+lang en_US.UTF-8
+xconfig --startxonboot
+text
+reboot
+keyboard us
+timezone Asia/Calcutta
+network --device eth0 --bootproto dhcp
+rootpw welcome
+user --groups=wheel --name=rajeshj --password=$6$uNZZmKCbRCFAjGWi$VZ7cg8iQAHDfQZTkcWhqijIjHHSAzhA9b30kQRmGDqCqtVu1E6/bn.ChEFVr/KZ53.72NdAjkaXMHEQwGim5T. --iscrypted
+clearpart --all --drives=sda
+bootloader --location=mbr --driveorder=sda --append="rhgb quiet"
+#Disk Partitions
+part pv.19  --ondisk=sda --size=1 --grow
+part /boot --fstype ext4 --ondisk=sda --size=500
+volgroup VolGroup00 --pesize=4096 pv.19
+logvol swap --fstype swap --name=LogVolswap --vgname=VolGroup00 --size=528 --grow --maxsize=1056
+logvol / --fstype ext4 --name=LogVolroot --vgname=VolGroup00 --size=1024 --grow --maxsize=20000
+logvol /opt --fstype ext4 --name=LogVolopt --vgname=VolGroup00 --size=1024 --grow --maxsize=40000
+skipx
+%packages
+@core
+%post
+cd /etc/yum.repos.d
+rm -rf *.repo
+wget -q -O centos6.repo ftp://{{base_server}}/repos/centos6.repo

@@ -8,7 +8,7 @@
 - name: enable named service
   service: "name=named state=started enabled=true"
   tags: named-service
-  
+
 - name: update named conf file
   template: "src={{item}}.j2 dest=/etc/{{item}} force=yes"
   with_items:
@@ -19,14 +19,14 @@
   tags: named-confs
 
 - name: update named zone files 
-  template: "src={{item}}.j2 dest=/var/named/{{item}} force=no"
+  template: "src={{item}}.j2 dest=/var/named/{{item}} force=no owner={{named_owner}} group={{named_group}}"
   with_items:
   - "example.com.db"
   - "example.com.rev.db"
   notify:
     - restart dns
   tags: named-confs
-    
+  
 - name: update permissions
   file: dest=/var/named owner=named group=named state=directory
   tags: named-confs
@@ -35,3 +35,4 @@
   firewalld: "service=dns zone={{firewall_zone}} permanent=true state=enabled"
   when : ansible_os_family == 'RedHat'
   tags: named-confs
+  

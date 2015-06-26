@@ -35,6 +35,7 @@
     - centos/7
     - kickstart
     - repos
+    - ubuntu/trusty_32
   tags: pxeserver-confs
   
 - name: create distribution directories
@@ -58,9 +59,10 @@
   tags: pxeserver-confs
 
 - name: update menu configurations
-  template: "src=pxeserver/{{item}}.j2 dest={{pxe.base_directory}}/pxelinux.cfg/{{item}} force=yes"
+  template: "src=pxeserver/{{item}}.j2 dest={{pxe.base_directory}}/pxelinux.cfg/{{item}} force=yes mode=0755"
   with_items:
     - centos
+    - ubuntu
   notify:
     - restart xinetd
   tags: pxeserver-confs
@@ -86,18 +88,28 @@
     - centos6_gnomedesktop.cfg
     - centos7_baseserver.cfg
     - trusty32_srvr.seed
+    - trusty32_desktop.seed
+    - trusty64_srvr.seed
+    - trusty64_desktop.seed
   tags: pxeserver-confs
 
 # Setup Ubuntu PXE Server
-- name: create ubuntu distribution directories
-  file: "path={{pxe.base_directory}}/images/{{item}} owner={{user_name}} group={{group_name}} recurse=true state=directory mode=0755"
-  with_items:
-    - 'ubuntu/trusty_32'
-  tags: pxeserver-confs
   
 - name: create netboot files for trusty-32
-  get_url: "src=http://archive.ubuntu.com/ubuntu/dists/{{item}}/main/installer-i386/current/images/netboot/netboot.tar.gz dest={{var.cache.path}}/{{item}}_netboot.tar.gz"   
-  with_items:
-    - 'utopic'
-    - 'trusty-updates'
+  get_url: "url=http://archive.ubuntu.com/ubuntu/dists/{{item[0]}}/main/installer-{{item[1]}}/current/images/netboot/netboot.tar.gz dest={{var.cache.path}}/{{item[0]}}_{{item[1]}}netboot.tar.gz"
+  with_nested:
+    - ['utopic', 'trusty-updates']
+    - ['i386', 'amd64']
   tags: pxeserver-confs
+  
+- name: extract netboot files
+  shell: "tar -xzf {{var.cache.path}}/{{item[0]}}_{{item[1]}}netboot.tar.gz -C {{pxe.base_directory}};touch {{var.cache.path}}/.{{item[0]}}_{{item[1]}}_extracted creates={{var.cache.path}}/.{{item[0]}}_{{item[1]}}_extracted"
+  with_nested:
+    - ['utopic', 'trusty-updates']
+    - ['i386', 'amd64']
+  tags: pxeserver-confs
+  
+- name: update proxyfile
+  template: "src=pxeserver/02proxy.j2 dest={{ftp.base_directory}}/pub/02proxy force=yes"
+  tags: pxeserver-confs
+  

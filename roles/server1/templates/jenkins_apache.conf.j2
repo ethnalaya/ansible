@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+Include conf.modules.d/*.conf
+LoadModule proxy_module  modules/mod_proxy.so
+<VirtualHost *:80>
+  ServerName {{ jenkins.fqdn }}
+  ProxyPreserveHost Off
+  ProxyPass        /  http://127.0.0.1:8080/
+  ProxypassReverse /  http://127.0.0.1:8080/
+  ProxyRequests Off
+  <Proxy *>
+    Order deny,allow
+    Allow from all
+  </Proxy>
+  <Location />
+    Order allow,deny
+    Allow from all
+  </Location>
+</VirtualHost>

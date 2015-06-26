@@ -15,6 +15,8 @@ min_range: 1
 max_range: 50
 extn_dns_server_1: 202.56.215.28
 extn_dns_server_2: 202.56.215.29
+named_owner: named
+named_group: named
 
 dhcp_leases:
   - {name: vmserver,      ipaddress: 192.168.0.2, macaddress: "70:71:bc:d5:7f:44"}
@@ -24,7 +26,7 @@ dhcp_leases:
 cname_records:
   - {name: pop3,            resolved_to: server1}
   - {name: smtp,            resolved_to: server1}
-  - {name: netinstall,      resolved_to: server1}
+  - {name: netinstaller,      resolved_to: server1}
   - {name: jenkins,         resolved_to: server1}
 ###############
 #packages

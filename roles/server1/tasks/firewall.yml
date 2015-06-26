@@ -1,0 +1,15 @@
+---
+- name: update systctl file
+  lineinfile: "dest=/etc/sysctl.conf line='net.ipv4.ip_forward=1' state=present"
+  when: ansible_os_family == 'RedHat'
+  tags: firewall-settings
+
+- name: add new zone for internal settings
+  shell: "firewall-cmd --permanent --zone={{firewall_zone}} --change-interface={{internal_interface}};firewall-cmd --reload creates=/etc/firewalld/zones/{{firewall_zone}}.xml"
+  when: ansible_os_family == 'RedHat'
+  tags: firewall-settings
+  
+- name: enable masquerade for public zone
+  shell: "firewall-cmd --permanent --zone=public --add-masquerade;firewall-cmd --reload;touch {{var.cache.path}}/.masquerade creates={{var.cache.path}}/.masquerade"
+  when: ansible_os_family == 'RedHat'
+  tags: firewall-settings
