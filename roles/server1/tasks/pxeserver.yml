@@ -91,19 +91,21 @@
     - trusty32_desktop.seed
     - trusty64_srvr.seed
     - trusty64_desktop.seed
+  notify:
+    - restart xinetd
   tags: pxeserver-confs
 
 # Setup Ubuntu PXE Server
   
 - name: create netboot files for trusty-32
-  get_url: "url=http://archive.ubuntu.com/ubuntu/dists/{{item[0]}}/main/installer-{{item[1]}}/current/images/netboot/netboot.tar.gz dest={{var.cache.path}}/{{item[0]}}_{{item[1]}}netboot.tar.gz"
+  get_url: "url=http://archive.ubuntu.com/ubuntu/dists/{{item[0]}}/main/installer-{{item[1]}}/current/images/netboot/netboot.tar.gz dest={{var.cache.path}}/{{item[0]}}_{{item[1]}}_netboot.tar.gz"
   with_nested:
     - ['utopic', 'trusty-updates']
     - ['i386', 'amd64']
   tags: pxeserver-confs
   
 - name: extract netboot files
-  shell: "tar -xzf {{var.cache.path}}/{{item[0]}}_{{item[1]}}netboot.tar.gz -C {{pxe.base_directory}};touch {{var.cache.path}}/.{{item[0]}}_{{item[1]}}_extracted creates={{var.cache.path}}/.{{item[0]}}_{{item[1]}}_extracted"
+  shell: "tar -xzf {{var.cache.path}}/{{item[0]}}_{{item[1]}}_netboot.tar.gz -C {{pxe.base_directory}};touch {{var.cache.path}}/.{{item[0]}}_{{item[1]}}_extracted creates={{var.cache.path}}/.{{item[0]}}_{{item[1]}}_extracted"
   with_nested:
     - ['utopic', 'trusty-updates']
     - ['i386', 'amd64']

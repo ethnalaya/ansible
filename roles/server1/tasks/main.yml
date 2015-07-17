@@ -18,6 +18,8 @@
   tags: server1
 ##- include: dnsmasq.yml                               # Install dnsmasq Service, Tags: dnsmasq-package,dnsmasq-confs,dnsmasq-service
 ##  tags: server1
+- include: samba.yml
+  tags: samba
 - include: pxeserver.yml                                # Install Pxe Server, Tags: pxeserver-package,pxeserver-confs
   tags: server1
 - include: jenkins_server.yml                           # Install Jenkins Server, Tags: jenkins-package,jenkins-confs

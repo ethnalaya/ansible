@@ -51,6 +51,15 @@ jenkins:
   fqdn: jenkins.example.com
   
 ################
+## Samba
+################
+samba:
+  log_location: /var/log/samba.log
+  workgroup: ethnalaya
+  base_path: /windows
+  
+
+################
 ## Pxe Server
 ################
 pxe:

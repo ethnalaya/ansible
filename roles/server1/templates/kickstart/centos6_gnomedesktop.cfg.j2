@@ -29,3 +29,7 @@ logvol /opt --fstype ext4 --name=LogVolopt --vgname=VolGroup00 --size=1024 --gro
 cd /etc/yum.repos.d
 rm -rf *.repo
 wget -q -O centos6.repo ftp://{{base_server}}/repos/centos6.repo
+cat >> /etc/sudoers << EOF_SUDOERS
+### Allowing Wheel users with sudo access ####
+%wheel ALL=(ALL) NOPASSWD: ALL
+EOF_SUDOERS
