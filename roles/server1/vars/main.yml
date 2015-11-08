@@ -23,6 +23,7 @@ dhcp_leases:
   - {name: appleseed,     ipaddress: 192.168.0.3, macaddress: "68:5b:35:d1:0c:64"}
   - {name: tracgit,       ipaddress: 192.168.0.4, macaddress: "08:00:27:00:00:04"}
   - {name: aptcacher,     ipaddress: 192.168.0.5, macaddress: "08:00:27:00:00:05"}
+  - {name: chef12,        ipaddress: 192.168.0.6, macaddress: "08:00:27:00:00:06"} 
 cname_records:
   - {name: pop3,            resolved_to: server1}
   - {name: smtp,            resolved_to: server1}

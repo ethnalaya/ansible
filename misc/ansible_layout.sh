@@ -28,7 +28,8 @@ func_create_file() {
 L1_DIRECTORIES="group_vars host_vars library filter_plugins roles environments misc"
 L1_FILES="site.yml"
 
-ROLES="base server1 tinypm tracgit icinga"
+#ROLES="base server1 tinypm tracgit icinga"
+ROLES="assignment1"
 ROLES_DIRECTORIES="tasks handlers vars files templates defaults meta"
 ROLES_DEFAULT_FILE="main.yml"
 ROLES_NULL_DIRECTORIES="files templates"
