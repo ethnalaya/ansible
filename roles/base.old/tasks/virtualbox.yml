@@ -1,8 +1,0 @@
----
-#file : virtualbox.yml
-- name: install virtualbox repo
-  copy: src=virtualbox.repo dest=/etc/yum.repos.d/virtualbox.repo owner={{ user_name }} group={{ group_name }}
-  when:  ansible_os_family == 'RedHat'
- 
-- name: install virtualbox 
-  action: "{{ ansible_pkg_mgr }} name=virtualbox state=present"
