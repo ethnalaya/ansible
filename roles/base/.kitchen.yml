@@ -1,0 +1,28 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: ansible_playbook
+  hosts: test-kitchen
+  require_chef_for_busser: false
+  ansible_verbose: false
+
+verifier:
+  name: serverspec
+
+platforms:
+  - name: centos-core
+    driver_config: 
+      box: centos72
+
+  - name: centos-final
+    driver_config: 
+      box: centos67
+
+suites:
+  - name: default
+    verifier:
+      patterns:
+      - roles/base/test/integration/default/serverspec/base_spec.rb
+      

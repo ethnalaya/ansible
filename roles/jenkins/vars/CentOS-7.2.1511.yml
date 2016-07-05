@@ -1,0 +1,4 @@
+---
+jenkins:
+  packages:
+    - { package_name: jenkins, package_version: 1.651.3-1.1}

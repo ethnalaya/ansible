@@ -1,0 +1,20 @@
+#jenkins service
+- name: start jenkins
+  service: name={{jenkins.service_name}} state=started
+  tags: jenkins-service
+
+- name: stop jenkins
+  service: name={{jenkins.service_name}} state=stopped
+  tags: jenkins-service
+
+- name: restart jenkins
+  service: name={{jenkins.service_name}} state=restarted
+  tags: jenkins-service
+
+- name: enable jenkins
+  service: name={{jenkins.service_name}} enabled=yes
+  tags: jenkins-service
+
+- name: disable jenkins
+  service: name={{jenkins.service_name}} enabled=no
+  tags: jenkins-service

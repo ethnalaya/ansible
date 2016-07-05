@@ -1,0 +1,17 @@
+---
+- name: setup jenkins repo for Redhat Family
+  copy: src=RedHat_jenkins.repo dest=/etc/yum.repos.d/jenkins.repo force=yes owner={{ root_user }} group={{ root_group }}
+  when: ansible_os_family == 'RedHat'
+  tags: jenkins-install
+
+- name: setup keys on RedHat Family
+  rpm_key: key=http://pkg.jenkins-ci.org/redhat-stable/jenkins-ci.org.key state=present
+  ignore_errors: True
+  when: ansible_os_family == 'RedHat'
+  tags: jenkins-install
+
+- name: install Jenkins binaries
+  package: name={{item.package_name}}-{{item.package_version}} state=present
+  with_items: "{{jenkins.packages}}"
+  notify: start jenkins  
+  tags: jenkins-install

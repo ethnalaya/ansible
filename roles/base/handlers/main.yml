@@ -1,4 +1,21 @@
 ---
+#ntp service
 - name: start ntp
-  service: "name={{ ntp.service_name }} state=started enabled=yes"
+  service: name={{ntp.service_name}} state=started
+  tags: ntp-service
+
+- name: stop ntp
+  service: name={{ntp.service_name}} state=stopped
+  tags: ntp-service
+
+- name: restart ntp
+  service: name={{ntp.service_name}} state=restarted
+  tags: ntp-service
+
+- name: enable ntp
+  service: name={{ntp.service_name}} enabled=yes
+  tags: ntp-service
+
+- name: disable ntp
+  service: name={{ntp.service_name}} enabled=no
   tags: ntp-service

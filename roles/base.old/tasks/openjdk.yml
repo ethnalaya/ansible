@@ -1,0 +1,4 @@
+---
+- name: install openjdk version
+  action: "{{ ansible_pkg_mgr }} name={{ jdk.package_name }} state=present"
+  tags: jdk-package

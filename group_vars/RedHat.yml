@@ -1,6 +1,2 @@
 ---
-#for vars/CentOS
-mysql:
-  packages:
-    -{name: mariadb }
-    -{name: mariadb-libs }
+source_functions_library: /etc/init.d/functions

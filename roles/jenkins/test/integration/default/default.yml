@@ -1,0 +1,9 @@
+---
+- hosts: all
+  roles:
+    - base
+    - jenkins
+  vars_files:
+  - "group_vars/default.yml"
+  - "group_vars/organization.yml"
+  - "group_vars/{{ansible_os_family}}.yml"

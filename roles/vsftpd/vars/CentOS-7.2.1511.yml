@@ -1,0 +1,4 @@
+---
+vsftpd:
+  packages:
+    - { package_name: vsftpd, package_version: 3.0.2-11.el7_2}

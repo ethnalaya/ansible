@@ -1,0 +1,7 @@
+---
+- name: install vstpd packages
+  package: name={{item.package_name}}-{{item.package_version}} state=present
+  with_items: "{{vsftpd.packages}}"
+  notify:
+  - enable vsftpd
+  tags: vsftpd-install

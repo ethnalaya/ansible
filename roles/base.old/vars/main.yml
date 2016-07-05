@@ -1,0 +1,8 @@
+---
+ntp:
+  binaries:
+    CentOS:
+      7.0.1406:
+        - { name: ntpd, version: 1.6.7 }
+    
+    

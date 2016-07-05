@@ -1,0 +1,14 @@
+---
+- name: update firewalld settings
+  firewalld: "service={{vsftpd.firewalld_service_name}} permanent=true zone={{firewall_zone}} state=enabled"
+  when: ansible_os_family == 'RedHat' and {{ansible_distribution_major_version}} >=7 and {{firewall_enabled}}
+  tags: vsftpd-configure,firewall-configure
+
+- name: update vsftpd configuration
+  template: src=vsftpd.conf.j2
+            dest={{vsftpd.conf_file}}
+            owner={{vsftpd.service_owner}}
+            group={{vsftpd.service_group}}
+            mode="0600"
+  notify: restart vsftpd
+  tags: vsftpd-configure

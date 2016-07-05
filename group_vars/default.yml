@@ -1,34 +1,12 @@
 ---
-user_name: root
-group_name: root
-home_dir: /root
-
+file_cache_path: /var/cache
 source_functions_library: /etc/init.d/functions
-
-var: 
-  cache: 
-    path: /var/cache 
-
-ntp:
-  package_name: ntp 
-  package_version: 4.2.6p5
-  service_name: ntpd
-jdk:
-  package_name: java-1.7.0-openjdk
-  package_version: 1.7.0.79
-
-mysql:
-  packages:
-    - mysql-server
-    - mysql-client
-    - libmysqlclient-dev
-    - libdbd-mysql
-    - python-mysqldb
-apache:
-  package_name: httpd
-  service_name: httpd
-  sites_directory: /etc/httpd/conf.d
-  service_owner: apache
-  group_owner: apache
-
-    
+org_name: None
+banner: "Default banner"
+domain_name: None
+firewall_zone: None
+firewall_enabled: true
+timezone: 'Asia/Kolkatta'
+primary_server: None
+root_user: root
+root_group: root

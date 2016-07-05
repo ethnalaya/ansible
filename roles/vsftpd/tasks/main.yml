@@ -1,0 +1,13 @@
+---
+- name: Include variables for VSFTP
+  include_vars: "{{ item }}"
+  with_items:
+    - "main.yml"
+    - ["{{ ansible_distribution }}-{{ansible_distribution_version}}.yml", "{{ansible_os_family}}.yml"]
+  tags: vsftpd-install,vsftpd-configure
+
+- include: install.yml
+  tags: vsftpd-install
+
+- include: configure.yml
+  tags: vsftpd-configure

@@ -1,0 +1,13 @@
+---
+
+- name: Configure Time zone
+  file: src="/usr/share/zoneinfo/{{timezone}}"
+        dest=/etc/localtime
+        state=link
+        force=yes
+- name: Install NTP client package
+  package: name={{item.package_name}}-{{item.package_version}} state=present
+  with_items: "{{ntp.packages}}"
+  notify:
+    - start ntp
+    - enable ntp

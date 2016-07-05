@@ -1,0 +1,3 @@
+---
+vsftpd:
+  firewalld_service_name: ftp

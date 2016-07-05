@@ -1,0 +1,11 @@
+---
+vsftpd:
+  conf_file: /etc/vsftpd/vsftpd.conf
+  anon_root: /var/ftp
+  banner: "Welcome to FTP service."
+  firewalld_service_name: None
+  packages:
+    - { package_name: vsftpd, package_version: "*"}
+  service_name: vsftpd
+  service_owner: root
+  service_group: root

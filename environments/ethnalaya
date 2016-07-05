@@ -1,4 +1,3 @@
-#tracgit ansible_ssh_host=192.168.1.5
-#icinga ansible_ssh_host=192.168.1.5
-server1 ansible_ssh_host=server1.example.com
-ubuntu_mirror ansible_ssh_host=192.168.0.11
+server1 ansible_ssh_host=server1.example.com ansible_ssh_user=root
+vmserver ansible_ssh_host=192.168.0.2 ansible_ssh_user=root
+

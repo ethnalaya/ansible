@@ -1,0 +1,8 @@
+---
+- hosts: all
+  roles:
+    - vsftpd
+  vars_files:
+  - "group_vars/default.yml"
+  - "group_vars/organization.yml"
+  - "group_vars/{{ansible_os_family}}.yml"

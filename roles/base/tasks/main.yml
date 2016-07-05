@@ -1,8 +1,9 @@
 ---
-- name: install EPEL repo
-  action: yum pkg=epel-release  state=present
-  when: ansible_os_family == 'RedHat'
-  
-#Main role picks the following cookbook in role
-- include: update_auth_keys.yml
-- include: ntpclient.yml
+- name: Include variable set
+  include_vars: "{{ item }}"
+  with_items:
+    - main.yml
+    - "{{ansible_os_family}}.yml"
+    - "{{ ansible_distribution }}-{{ansible_distribution_version}}.yml"
+
+- include: ntp_client.yml

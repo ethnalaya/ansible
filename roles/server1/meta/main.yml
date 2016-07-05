@@ -1,0 +1,11 @@
+---
+dependencies: []
+galaxy_info:
+  author: "Rajesh Jonnalagadda"
+  email: "rajesh.jvln@gmail.com"
+  min_ansible_version: 2.1.0
+  platforms:
+    - name: EL
+      versions:
+        - 7.2
+        

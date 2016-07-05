@@ -1,0 +1,8 @@
+---
+- name: Include variables for Jenkins
+  include_vars: "{{ item }}"
+  with_items:
+    - "main.yml"
+    - ["{{ ansible_distribution }}-{{ansible_distribution_version}}.yml", "{{ansible_os_family}}.yml"]
+- include: ../../base/tasks/openjdk.yml
+- include: install.yml

@@ -1,1 +1,11 @@
-
+---
+ntp:
+  packages:
+    - { package_name: ntp, package_version: "*"}
+  service_name: ntp
+openjdk:
+  packages:
+    - { package_name: java-1.8.0-openjdk, package_version: "*" }
+    
+    
+    

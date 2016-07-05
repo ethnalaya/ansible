@@ -1,0 +1,7 @@
+---
+org_name: Ethnalaya
+banner: "This file is managed by Ansible, please dont edit by Hand!!!. Contact rajesh.jvln@gmail.com for further details."
+domain_name: example.com
+firewall_zone: public
+primary_server: server1
+artifacts_location: /var/ftp/artifacts

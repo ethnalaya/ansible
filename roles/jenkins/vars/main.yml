@@ -1,0 +1,7 @@
+---
+jenkins:
+  packages:
+    - { package_name: jenkins, package_version: "*"}
+  service_name: jenkins
+  service_user: jenkins
+  service_group: jenkins
