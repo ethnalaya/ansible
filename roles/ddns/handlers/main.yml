@@ -1,0 +1,21 @@
+---
+#dhcp service
+- name: start dhcp
+  service: name={{dhcp.service_name}} state=started
+  tags: dhcp-service
+
+- name: stop dhcp
+  service: name={{dhcp.service_name}} state=stopped
+  tags: dhcp-service
+
+- name: restart dhcp
+  service: name={{dhcp.service_name}} state=restarted
+  tags: dhcp-service
+
+- name: enable dhcp
+  service: name={{dhcp.service_name}} enabled=yes
+  tags: dhcp-service
+
+- name: disable dhcp
+  service: name={{dhcp.service_name}} enabled=no
+  tags: dhcp-service

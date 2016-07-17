@@ -7,7 +7,7 @@ provisioner:
   hosts: test-kitchen
   require_chef_for_busser: false
   ansible_verbose: false
-
+  roles_path: ../../roles
 verifier:
   name: serverspec
 
@@ -15,8 +15,6 @@ platforms:
   - name: centos-core
     driver_config: 
       box: centos72
-      network:
-        - ["private_network", {ip: "192.168.33.34"}]
 
   - name: centos-final
     driver_config: 
@@ -24,6 +22,4 @@ platforms:
 
 suites:
   - name: default
-    verifier:
-      patterns:
-      - roles/vsftpd/test/integration/default/serverspec/vsftpd_spec.rb
+

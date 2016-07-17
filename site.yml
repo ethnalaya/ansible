@@ -1,26 +1,44 @@
 ---
-# file: site.yml
+# Main configuration file
 - hosts: all
   roles:
     - base
-  sudo: True
-  vars_files:
-    - "group_vars/default.yml" 
-    - "group_vars/ethnalaya.yml"
-    - "group_vars/{{ ansible_os_family }}.yml"
-
-- hosts: server1
-  roles:
-    - server1
-  sudo: True
-  vars_files:
-    - "group_vars/default.yml" 
-    - "group_vars/{{ ansible_os_family }}.yml"
-
-- hosts: tracgit
-  roles:
-    - tracgit
-  sudo: True
+  become_method: sudo
   vars_files:
     - "group_vars/default.yml"
-    - "group_vars/{{ansible_os_family }}.yml"
+    - "group_vars/ethnalaya.yml"
+    - "group_vars/{{ansible_os_family}}.yml"
+- hosts: server1
+  become_method: sudo
+  gather_facts: only_once
+  vars_files:
+    - "group_vars/default.yml"
+    - "group_vars/{{ansible_os_family}}.yml"
+    - "group_vars/ethnalaya.yml"
+  tasks:
+  - name: update systctl file
+    lineinfile: "dest=/etc/sysctl.conf line='net.ipv4.ip_forward=1' state=present"
+    when: ansible_os_family == 'RedHat'
+    tags: firewall-settings
+
+  - name: add new zone for internal settings
+    shell: "firewall-cmd --permanent --zone={{firewall_zone}} --change-interface={{internal_interface}};firewall-cmd --reload creates=/etc/firewalld/zones/{{firewall_zone}}.xml"
+    when: ansible_os_family == 'RedHat'
+    tags: firewall-settings
+  
+  - name: enable masquerade for public zone
+    shell: "firewall-cmd --permanent --zone={{firewall_zone}} --add-masquerade;firewall-cmd --reload;touch {{file_cache_path}}/.masquerade creates={{file_cache_path}}/.masquerade"
+    when: ansible_os_family == 'RedHat'
+    tags: firewall-settings
+
+- hosts: server1
+  become_method: sudo
+  gather_facts: only_once
+  vars_files:
+    - "group_vars/default.yml"
+    - "group_vars/ethnalaya.yml"
+    - "group_vars/{{ansible_os_family}}.yml"
+  roles:
+    - vsftpd
+    - jenkins
+ 

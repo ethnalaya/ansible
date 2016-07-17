@@ -1,0 +1,22 @@
+---
+- name: Install jenkins plugins - Version specific
+  get_url: "url=http://updates.jenkins-ci.org/download/plugins/{{item.plugin_name}}/{{item.plugin_version}}/{{item.plugin_name}}.hpi
+           dest={{jenkins.home_dir}}/plugins/{{item.plugin_name}}.hpi
+           owner={{jenkins.service_user}}
+           group={{jenkins.service_group}}
+           "
+  with_items: "{{jenkins.plugins}}"
+  notify: restart jenkins
+  tags: jenkins-configure
+  when: not jenkins.update_plugins|bool 
+  
+- name: Install jenkins plugins - Auto updates
+  get_url: "url=http://updates.jenkins-ci.org/latest/{{item.plugin_name}}.hpi
+           dest={{jenkins.home_dir}}/plugins/{{item.plugin_name}}.hpi
+           owner={{jenkins.service_user}}
+           group={{jenkins.service_group}}
+           "
+  with_items: "{{jenkins.plugins}}"
+  when: jenkins.update_plugins|bool
+  notify: restart jenkins
+  tags: jenkins-configure

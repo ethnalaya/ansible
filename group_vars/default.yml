@@ -6,7 +6,7 @@ banner: "Default banner"
 domain_name: None
 firewall_zone: None
 firewall_enabled: true
-timezone: 'Asia/Kolkatta'
+timezone: 'Asia/Kolkata'
 primary_server: None
 root_user: root
 root_group: root

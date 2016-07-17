@@ -5,3 +5,21 @@ jenkins:
   service_name: jenkins
   service_user: jenkins
   service_group: jenkins
+  firewalld_service_port: None
+  firewalld_service_protocol: None
+  firewalld_service_name: None
+  home_dir: /var/lib/jenkins
+  update_plugins: false
+  plugins:
+   - { plugin_name: build-pipeline-plugin, plugin_version: 1.3.1 }
+   - { plugin_name: slack, plugin_version: 2.0.1 }
+   - { plugin_name: junit, plugin_version: 1.15 }
+   - { plugin_name: javadoc, plugin_version: 1.4 }
+   - { plugin_name: simple-theme-plugin, plugin_version: 0.3 }
+   - { plugin_name: maven-plugin, plugin_version: 2.13 }
+   - { plugin_name: run-condition, plugin_version: 1.0 }
+   - { plugin_name: conditional-buildstep, plugin_version: 1.3.5 }
+   - { plugin_name: envinject, plugin_version: 1.92.1 }
+   - { plugin_name: parameterized-trigger, plugin_version: 2.31 }
+   - { plugin_name: jenkins-multijob-plugin, plugin_version: 1.21 }
+     

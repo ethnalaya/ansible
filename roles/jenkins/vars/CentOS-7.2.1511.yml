@@ -1,4 +1,8 @@
 ---
 jenkins:
   packages:
-    - { package_name: jenkins, package_version: 1.651.3-1.1}
+    - { package_name: jenkins, package_version: 2.7.1-1.1}
+  firewalld_service_port: 8080
+  firewalld_service_protocol: tcp
+  firewalld_service_name: http
+  update_plugins: true

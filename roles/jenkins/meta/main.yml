@@ -1,5 +1,5 @@
 ---
-dependencies: []
+dependencies: [base]
 galaxy_info:
   author: "Rajesh Jonnalagadda"
   email: "rajesh.jvln@gmail.com"

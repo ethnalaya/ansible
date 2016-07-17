@@ -1,7 +1,7 @@
 ---
 - hosts: all
   roles:
-    - jenkins
+    - ddns
   vars_files:
   - "group_vars/default.yml"
   - "group_vars/ethnalaya.yml"

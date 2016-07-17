@@ -1,0 +1,6 @@
+---
+dhcp:
+  packages:
+    - { package_name: dhcp, package_version: "*" }
+  
+  firewalld_service_name: None

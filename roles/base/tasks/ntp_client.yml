@@ -5,6 +5,12 @@
         dest=/etc/localtime
         state=link
         force=yes
+  register: update_localtime
+
+- name: Update SELINUX settings
+  shell: semanage fcontext -a -t locale_t /etc/localtime
+  when: update_localtime|changed and ansible_os_family == 'RedHat' and {{ansible_distribution_major_version}} >=7 and {{firewall_enabled}}
+
 - name: Install NTP client package
   package: name={{item.package_name}}-{{item.package_version}} state=present
   with_items: "{{ntp.packages}}"

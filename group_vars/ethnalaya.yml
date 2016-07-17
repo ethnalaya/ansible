@@ -1,0 +1,24 @@
+---
+org_name: Ethnalaya
+banner: "This file is managed by Ansible, please dont edit by Hand!!!. Contact rajesh.jvln@gmail.com for further details."
+firewall_zone: public
+artifacts_location: /var/ftp/artifacts
+
+#Network information
+domain_name: example.com
+base_server: 192.168.0.1
+primary_server: server1
+network_class: 192.168.0
+subnet_mask: 255.255.255.0
+internal_interface: enp0s25
+min_range: 1
+max_range: 50
+extn_dns_server_1: 202.56.215.28
+extn_dns_server_2: 202.56.215.29
+network_leases:
+  - { name: vmserver,      ipaddress: 192.168.0.2, macaddress: "70:71:bc:d5:7f:44" }
+cname_records:
+ - { name: pop3, resolved_to: server1}
+
+jenkins:
+  update_plugins: true

@@ -1,0 +1,6 @@
+---
+dhcp:
+  service_name: dhcpd
+  service_user: root
+  service_group: root
+  conf_file: /etc/dhcp/dhcpd.conf

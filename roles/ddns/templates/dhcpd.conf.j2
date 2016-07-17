@@ -1,0 +1,48 @@
+#{{ banner }}
+authorative;
+server-identifier myserver;
+use-host-decl-names on;
+ddns-hostname = pick-first-value(ddns-hostname,option host-name,concat("node",suffix(binary-to-ascii(10,8,"",leased-address),2)));
+ddns-domainname "{{domain_name}}";
+ddns-update-style interim;
+update-static-leases on;
+ddns-updates on;
+allow client-updates;
+include "/etc/rndc.key";
+
+zone {{domain_name}} {
+	primary {{ base_server }};
+	key "rndc-key";
+}
+ zone 0.168.192.in-addr.arpa {
+  primary {{ base_server }};
+	key "rndc-key";
+}
+
+subnet {{ network_class }}.0 netmask {{ subnet_mask }} {
+
+# --- default gateway
+	option routers			{{ base_server }};
+	option subnet-mask		{{subnet_mask }} ;
+
+	option nis-domain		"{{domain_name}}";
+	option domain-name		"{{ domain_name }}";
+	option domain-name-servers	{{ base_server }},{{ extn_dns_server_1 }},{{ extn_dns_server_2 }};
+
+	option time-offset		-18000;	# Eastern Standard Time
+	option ntp-servers		{{ base_server }};
+	
+	range dynamic-bootp {{ network_class }}.5 {{ network_class }}.{{ max_range }};
+	default-lease-time 21600;
+	max-lease-time 43200;
+	filename "pxelinux.0";
+	next-server {{ base_server }};
+{% for each_host in network_leases %}
+	host {{ each_host.name }} {
+	 hardware ethernet {{ each_host.macaddress }};
+	 fixed-address {{ each_host.ipaddress }};
+	 next-server {{ base_server }};
+	 ddns-hostname "{{ each_host.name }}";
+	}
+{% endfor %}
+}
