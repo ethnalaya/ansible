@@ -25,8 +25,8 @@
       name: rpmforge
       description: RPMforge YUM repo
       file: external
-      baseurl: http://apt.sw.be/redhat/el7/en/$basearch/rpmforge
-      mirrorlist: http://mirrorlist.repoforge.org/el7/mirrors-rpmforge
+      baseurl: http://apt.sw.be/redhat/el{{ansible_distribution_major_version}}/en/$basearch/rpmforge
+      mirrorlist: http://mirrorlist.repoforge.org/el{{ansible_distribution_major_version}}/mirrors-rpmforge
   when: ansible_pkg_mgr == 'yum'
 
   rescue:
