@@ -14,7 +14,7 @@
   service: "name=xinetd enabled=true state=started"
   tags: pxeserver-confs
   
-- name: update tftp files
+- name:  update tftp files
   shell: "cp -rf /usr/share/syslinux/* {{pxe.base_directory}} creates={{pxe.base_directory}}/pxelinux.0"
   tags: pxeserver-confs
 

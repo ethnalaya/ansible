@@ -13,9 +13,30 @@
   tags: dhcp-service
 
 - name: enable dhcp
-  service: name={{dhcp.service_name}} enabled=yes
+  service: name={{dhcp.service_name}} state=started enabled=yes
   tags: dhcp-service
 
 - name: disable dhcp
-  service: name={{dhcp.service_name}} enabled=no
+  service: name={{dhcp.service_name}} state=stopped enabled=no
   tags: dhcp-service
+
+#named service
+- name: start named
+  service: name={{named.service_name}} state=started
+  tags: named-service
+
+- name: stop named
+  service: name={{named.service_name}} state=stopped
+  tags: named-service
+
+- name: restart named
+  service: name={{named.service_name}} state=restarted
+  tags: named-service
+
+- name: enable named
+  service: name={{named.service_name}} state=started enabled=yes
+  tags: named-service
+
+- name: disable named
+  service: name={{named.service_name}} state=stopped enabled=no
+  tags: named-service

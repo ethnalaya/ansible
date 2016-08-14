@@ -1,0 +1,6 @@
+---
+pxeserver:
+  packages:
+    - { package_name: syslinux    , package_version: '*'}
+    - { package_name: tftp-server , package_version: '*'}
+tftp_service_name: 'tftp'

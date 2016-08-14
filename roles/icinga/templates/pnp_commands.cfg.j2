@@ -1,0 +1,11 @@
+#{{ ansible_managed }}
+# pnp
+define command{
+        command_name    process-service-perfdata-file
+        command_line    /bin/mv {{ pnp4nagios.base_directory }}/var/service-perfdata {{ pnp4nagios.base_directory }}/var/spool/service-perfdata.$TIMET$
+}
+
+define command{
+        command_name    process-host-perfdata-file
+        command_line    /bin/mv {{ pnp4nagios.base_directory }}/var/host-perfdata {{ pnp4nagios.base_directory }}/var/spool/host-perfdata.$TIMET$
+}

@@ -1,0 +1,17 @@
+---
+- name: Install Nginx binary packages
+  package: name={{item.package_name}}-{{item.package_version}} state=present
+  with_items: "{{nginx.binary_packages}}"
+  notify: enable nginx
+
+- name: update firewalld settings - Nginx service
+  firewalld: service="{{nginx.firewalld_service_name}}"
+    zone="{{firewall_zone}}"
+    permanent=true immediate=true
+    state=enabled
+  when: ansible_os_family == 'RedHat' and {{ansible_distribution_major_version}} >=7 and {{firewall_enabled}}
+
+- name: Create nginx log rotation file
+  template: src=nginx.j2
+    dest=/etc/logrotate.d/nginx
+    owner=root group=root

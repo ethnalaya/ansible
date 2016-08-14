@@ -1,0 +1,20 @@
+;{{banner}}
+$TTL 86400	; 1 day
+@		IN SOA	server1. root.{{domain_name}}. (
+				703        ; serial
+				10800      ; refresh (3 hours)
+				900        ; retry (15 minutes)
+				604800     ; expire (1 week)
+				86400      ; minimum (1 day)
+				)
+;Name Server Information
+@ IN NS server1.
+server1     A		{{base_server}}
+;Mail exchanger
+{{domain_name}}		IN MX 10 		mail
+;A - Record HostName to IP Address
+mail      IN  A   {{base_server}}
+;aliases
+{% for each_alias in cname_records %}
+{{each_alias.name}} CNAME {{each_alias.resolved_to}}
+{% endfor %}

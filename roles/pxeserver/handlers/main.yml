@@ -1,0 +1,21 @@
+---
+#tftp service
+- name: start tftp
+  service: name={{tftp_service_name}} state=started
+  tags: tftp-service
+
+- name: stop tftp
+  service: name={{tftp_service_name}} state=stopped
+  tags: tftp-service
+
+- name: restart tftp
+  service: name={{tftp_service_name}} state=restarted
+  tags: tftp-service
+
+- name: enable tftp
+  service: name={{tftp_service_name}} state=started enabled=yes
+  tags: tftp-service
+
+- name: disable tftp
+  service: name={{tftp_service_name}} state=stopped enabled=no
+  tags: tftp-service

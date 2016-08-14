@@ -6,3 +6,4 @@
     - ["{{ ansible_distribution }}-{{ansible_distribution_version}}.yml", "{{ansible_os_family}}.yml"]
 
 - include: dhcp_server.yml
+- include: dns_server.yml

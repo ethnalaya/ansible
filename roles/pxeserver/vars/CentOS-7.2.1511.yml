@@ -1,0 +1,8 @@
+---
+pxeserver:
+  packages:
+    - { package_name: syslinux    , package_version: 4.05-12.el7 }
+    - { package_name: tftp-server , package_version: 5.2-12.el7 }
+    - { package_name: tftp        , package_version: 5.2-12.el7 }
+  firewalld_service_ports: [ 69, 4011 ]
+  firewalld_service_protocol: udp

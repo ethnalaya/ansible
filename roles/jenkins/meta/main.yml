@@ -1,5 +1,5 @@
 ---
-dependencies: [base]
+dependencies: [base,nginx]
 galaxy_info:
   author: "Rajesh Jonnalagadda"
   email: "rajesh.jvln@gmail.com"

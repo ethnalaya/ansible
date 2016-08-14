@@ -1,0 +1,7 @@
+#{{ ansible_managed }}
+{% for each_instance_type in my_instances.instance_types|sort %}
+define hostgroup {
+  hostgroup_name {{ each_instance_type }}
+  alias {{ each_instance_type | capitalize }}
+}
+{%endfor %}

@@ -1,0 +1,8 @@
+#!/bin/bash
+cd {{var.cache.path}}/pnp4nagios-{{pnp4nagios.version}}
+./configure --with-nagios-user={{ icinga.service_user }} --with-nagios-group={{ icinga.service_group}} --with-prefix={{ pnp4nagios.base_directory }} --with-layout=debian && \
+   make all && 
+   make install && 
+   make install-webconf && 
+   make install-config &&
+   make install-init

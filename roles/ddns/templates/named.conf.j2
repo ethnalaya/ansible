@@ -1,0 +1,41 @@
+#{{ banner }}
+include "/etc/rndc.key";
+options
+{
+  listen-on port 53 { 127.0.0.1;{{base_server}}; };
+  directory           "{{named.tables.base_directory}}"; // the default
+  dump-file           "{{named.tables.base_directory}}/data/cache_dump.db";
+  statistics-file     "{{named.tables.base_directory}}/data/named_stats.txt";
+  memstatistics-file  "{{named.tables.base_directory}}/data/named_mem_stats.txt";
+  max-journal-size 5M;
+  allow-query { localhost;{{network_class}}.0/24; };
+  recursion yes;
+  forwarders {
+	{{base_server}};
+	{{extn_dns_server_1}};
+	{{extn_dns_server_2}};
+  };
+};
+
+logging 
+{
+  channel default_debug {
+    file "data/named.run";
+    severity dynamic;
+  };
+};
+
+zone "{{domain_name}}" IN {
+  type master;
+  allow-update { key "rndc-key"; };
+  notify yes;
+  file "{{named.tables.base_directory}}/{{domain_name}}.db";
+};
+zone "0.168.192.in-addr.arpa" IN {
+  type master;
+  allow-update { key "rndc-key"; };
+  notify yes;
+  file "{{named.tables.base_directory}}/{{domain_name}}.rev.db";
+};
+include "/etc/named.rfc1912.zones";
+include "/etc/named.root.key";

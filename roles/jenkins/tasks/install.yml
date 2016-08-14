@@ -1,29 +1,32 @@
 ---
-- name: setup jenkins repo for Redhat Family
-  copy: src=RedHat_jenkins.repo dest=/etc/yum.repos.d/jenkins.repo force=yes owner={{ root_user }} group={{ root_group }}
-  when: ansible_os_family == 'RedHat'
-  tags: jenkins-install
+- block:
+  - name: setup jenkins repo for Redhat Family
+    yum_repository:
+      name: jenkins
+      description: Jenkins-stable
+      baseurl: http://pkg.jenkins-ci.org/redhat-stable
+      gpgcheck: yes
 
-- name: setup jenkins rpm keys on RedHat Family
-  rpm_key: key=http://pkg.jenkins-ci.org/redhat-stable/jenkins-ci.org.key state=present
-  ignore_errors: True
+  - name: setup jenkins rpm keys on RedHat Family
+    rpm_key: key=http://pkg.jenkins-ci.org/redhat-stable/jenkins-ci.org.key
+      state=present
+    ignore_errors: True
+    tags: jenkins-install
   when: ansible_os_family == 'RedHat'
-  tags: jenkins-install
 
 - name: install jenkins binaries
-  package: name={{item.package_name}}-{{item.package_version}} state=present
+  package: name={{item.package_name}}-{{item.package_version}}
+    state=present
   with_items: "{{jenkins.packages}}"
   notify: enable jenkins
   tags: jenkins-install
 
 - name: fix AJP issues with jenkins
   lineinfile: dest="{{jenkins.config_file}}"
-              regexp=^JENKINS_AJP_PORT
-              line=JENKINS_AJP_PORT="-1"
+    regexp=^JENKINS_AJP_PORT
+    line=JENKINS_AJP_PORT="-1"
   notify:
     - start jenkins
 
 - name: flushing handlers to create plugins directory
   meta: flush_handlers
-
-- include: plugins.yml

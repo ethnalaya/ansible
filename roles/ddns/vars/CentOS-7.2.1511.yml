@@ -3,3 +3,7 @@ dhcp:
    packages:
     - { package_name: dhcp, package_version: 4.2.5-42.el7.centos.x86_64 }
    firewalld_service_name: dhcp
+named:
+  packages:
+    - { package_name: bind, package_version: 9.9.4-29.el7_2.3 }
+  firewalld_service_name: dns

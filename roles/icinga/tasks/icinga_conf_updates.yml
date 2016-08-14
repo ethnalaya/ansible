@@ -1,0 +1,22 @@
+---
+- name: Obtain EC2 instance metadata
+  ec2instances: region='us-west-2'
+  register: my_instances
+  environment:
+    AWS_ACCESS_KEY_ID: 'AKIAIKI2MLGRWKGSMKAA'
+    AWS_SECRET_ACCESS_KEY: '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'
+    AWS_REGION: 'us-west-2'
+  tags: aws-icinga-update
+
+- name: Creates hostgroup file
+  template: "src=hostgroups.cfg.j2 dest={{ icinga.conf_directory }}/aws_hostgroups.cfg"
+  notify:
+    - restart icinga
+  tags: aws-icinga-update
+
+- name: Create hosts file
+  template: "src=hosts.cfg.j2 dest={{ icinga.conf_directory }}/aws_hosts.cfg"
+  notify:
+    - restart icinga
+  tags: aws-icinga-update
+  

@@ -1,0 +1,34 @@
+DEFAULT vesamenu.c32
+MENU BACKGROUND centos7pxebg.png
+MENU COLOR BORDER 0 #ffffffff #00000000 std
+MENU COLOR TITLE 0 #ffffffff #00000000 std
+MENU COLOR SEL 0 #ffffffff #ff000000 std
+MENU TITLE CentOS PXE Boot Menu
+PROMPT 0
+TIMEOUT 300
+ONTIMEOUT local
+MENU TITLE Centos
+LABEL Main Menu
+  MENU LABEL Main Menu
+  KERNEL vesamenu.c32
+  APPEND pxelinux.cfg/default
+LABEL centos66_console_install
+  MENU LABEL Centos-6.6-^Server-32 bit
+  MENU PASSWD welcome
+  kernel images/CentOS/6.6/vmlinuz
+  append initrd=images/CentOS/6.6/initrd.img  ks=ftp://{{base_server}}/kickstart/centos_6.6_baseserver.cfg
+LABEL centos66_graphics_install
+  MENU LABEL Centos-6.6-^Gnome-32 bit
+  MENU PASSWD welcome
+  kernel images/CentOS/6.6/vmlinuz
+  append initrd=images/CentOS/6.6/initrd.img  ks=ftp://{{base_server}}/kickstart/centos_6.6_gnomedesktop.cfg
+LABEL centos72_plain_install
+  MENU LABEL Centos-7.2-^Server-64 bit
+  MENU PASSWD welcome
+  kernel images/CentOS/7.2.1511/vmlinuz
+  append initrd=images/CentOS/7.2.1511/initrd.img ks=ftp://{{base_server}}/kickstart/centos_7.2.1511_baseserver.cfg
+LABEL centos72_plain_install
+  MENU LABEL Centos-7.2-^Gnome-64 bit
+  MENU PASSWD welcome
+  kernel images/CentOS/7.2.1511/vmlinuz
+  append initrd=images/CentOS/7.2.1511/initrd.img ks=ftp://{{base_server}}/kickstart/centos_7.2.1511_gnomedesktop.cfg

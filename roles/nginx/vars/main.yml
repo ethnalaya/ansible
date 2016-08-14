@@ -1,0 +1,5 @@
+---
+nginx:
+  binary_packages:
+    - { package_name: nginx, package_version: "*"}
+

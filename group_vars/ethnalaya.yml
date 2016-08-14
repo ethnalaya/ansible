@@ -1,5 +1,5 @@
 ---
-org_name: Ethnalaya
+org_name: ethnalaya
 banner: "This file is managed by Ansible, please dont edit by Hand!!!. Contact rajesh.jvln@gmail.com for further details."
 firewall_zone: public
 artifacts_location: /var/ftp/artifacts
@@ -17,8 +17,13 @@ extn_dns_server_1: 202.56.215.28
 extn_dns_server_2: 202.56.215.29
 network_leases:
   - { name: vmserver,      ipaddress: 192.168.0.2, macaddress: "70:71:bc:d5:7f:44" }
+  - { name: jonve02mac115, ipaddress: 192.168.0.3, macaddress: "38:c9:86:2c:0e:cb" }
 cname_records:
- - { name: pop3, resolved_to: server1}
+ - { name: ftp      ,         resolved_to: server1 }
+ - { name: jenkins  ,         resolved_to: server1 }
+ - { name: mirror   ,         resolved_to: server1 }
 
-jenkins:
-  update_plugins: true
+#
+jenkins_server_name: 'jenkins.example.com'
+mirror_server_name: 'mirror.example.com'
+jenkins_update_plugins: false

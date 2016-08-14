@@ -1,7 +1,7 @@
 ---
 #ntp service
 - name: start ntp
-  service: name={{ntp.service_name}} state=started
+  service: name={{ntp.service_name}} state=started enabled=yes
   tags: ntp-service
 
 - name: stop ntp
@@ -9,13 +9,13 @@
   tags: ntp-service
 
 - name: restart ntp
-  service: name={{ntp.service_name}} state=restarted
+  service: name={{ntp.service_name}} state=restarted enabled=yes
   tags: ntp-service
 
 - name: enable ntp
-  service: name={{ntp.service_name}} enabled=yes
+  service: name={{ntp.service_name}} state=started enabled=yes
   tags: ntp-service
 
 - name: disable ntp
-  service: name={{ntp.service_name}} enabled=no
+  service: name={{ntp.service_name}} state=stopped enabled=no
   tags: ntp-service

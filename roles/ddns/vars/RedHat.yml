@@ -1,6 +1,11 @@
 ---
 dhcp:
   service_name: dhcpd
-  service_user: root
+  service_owner: root
   service_group: root
   conf_file: /etc/dhcp/dhcpd.conf
+named:
+  service_name: named
+  service_owner: named
+  service_group: named
+  conf_file: /etc/named.conf

@@ -1,0 +1,69 @@
+---
+- name: Install bind packages
+  package: name={{item.package_name}}-{{item.package_version}}
+    state=present
+  with_items: "{{named.packages}}"
+  notify: enable named
+
+- name: Update rndc keys
+  copy: src=rndc.key
+    dest=/etc/rndc.key
+    owner=root group={{named.service_group}} mode=0644
+    force=yes
+  notify:
+    - restart dhcp
+    - restart named
+
+- name: Update named configuration file
+  template: src=named.conf.j2
+    dest={{named.conf_file}}
+    owner=root
+    group={{named.service_group}}
+    force=yes
+  notify: restart named
+  
+- name: Update Ownership of tables
+  file: dest={{named.tables.base_directory}}
+    owner={{named.service_owner}}
+    group={{named.service_group}}
+    mode=0770
+    recurse=true
+    state=directory
+
+- name: Update DNS Tables - Temp
+  template: src={{item}}.j2
+    dest=/tmp/.{{item}}
+  with_items:
+    - "{{domain_name}}.db"
+  register: dns_changes
+  notify: stop named
+
+- name: flushing handlers to update DNS Cache
+  meta: flush_handlers
+
+- name: Remove JNL files of DNS
+  file: path="{{named.tables.base_directory}}/{{item}}.jnl"
+    state=absent
+  with_items:
+    - "{{domain_name}}.db"
+    - "{{domain_name}}.rev.db"
+
+- name: Update DNS tables
+  template: src={{item}}.j2
+    dest={{named.tables.base_directory}}/{{item}}
+    owner={{named.service_owner}} group={{named.service_group}}
+    setype=_default
+    mode=0770
+  with_items:
+    - "{{domain_name}}.db"
+    - "{{domain_name}}.rev.db"
+  notify:
+    - restart named
+    - restart dhcp
+  
+- name: update firewalld settings - DHCP service
+  firewalld: service={{named.firewalld_service_name}}
+    zone={{firewall_zone}}
+    permanent=true immediate=true
+    state=enabled
+  when: ansible_os_family == 'RedHat' and {{ansible_distribution_major_version}} >=7 and {{firewall_enabled}}

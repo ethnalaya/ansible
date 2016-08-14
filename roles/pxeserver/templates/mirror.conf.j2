@@ -1,0 +1,15 @@
+#{{banner}}
+server {
+    listen      80;
+    server_name {{mirror_server_name}};
+    access_log  /var/log/nginx/mirror.access.log;
+    error_log   /var/log/nginx/mirror.error.log;
+
+    proxy_buffers 16 64k;
+    proxy_buffer_size 128k;
+
+    location / {
+        root '/var/ftp';
+        autoindex on;
+    }
+}

@@ -1,0 +1,63 @@
+---
+- name: install PNPNagios dependent packages
+  action: "{{ ansible_pkg_mgr }} pkg={{ item }} state=present"
+  with_items:
+    - rrdtool
+    - librrds-perl
+    - php5-gd
+  tags: pnp4nagios
+
+- name: download PNPNagios source tar ball
+  get_url: "
+    url=http://downloads.sourceforge.net/project/pnp4nagios/PNP-{{ pnp4nagios.major_version }}/pnp4nagios-{{ pnp4nagios.version }}.tar.gz
+    dest={{ var.cache.path }}/pnp4nagios-{{ pnp4nagios.version }}.tar.gz"
+  tags: pnp4nagios
+  
+- name: extract PNPNagios source ball
+  shell: "tar xzf pnp4nagios-{{ pnp4nagios.version }}.tar.gz chdir={{ var.cache.path }} creates={{ var.cache.path}}/pnp4nagios-{{pnp4nagios.version}}/README"
+  tags: pnp4nagios
+
+- name: Configure pnp4nagios installation script
+  template: "src=install_pnp4nagios.sh.j2 dest={{var.cache.path}}/pnp4nagios-{{pnp4nagios.version}}/install.sh mode=0777"
+  tags: pnp4nagios
+  
+- name: Execute Installation Script
+  shell: "{{var.cache.path}}/pnp4nagios-{{pnp4nagios.version}}/install.sh > {{var.cache.path}}/pnp4nagios-{{pnp4nagios.version}}/install.log
+            creates={{var.cache.path}}/pnp4nagios-{{pnp4nagios.version}}/install.log"
+  tags: pnp4nagios
+
+- name: Create Pnp4nagios base directory
+  file: "dest={{ pnp4nagios.base_directory }}/var recurse=true owner={{ icinga.service_user }} group={{ icinga.service_group }} state=directory"
+  tags: pnp4nagios
+  
+- name: Create sample rrd config file
+  shell: cp rra.cfg-sample rra.cfg chdir=/etc/pnp4nagios creates=/etc/pnp4nagios/rra.cfg
+  tags: pnp4nagios
+  
+- name: Update configuration file for pnp4nagios
+  lineinfile: "dest=/etc/pnp4nagios/config.php regexp='nagios_base' line='$conf['nagios_base'] = \"/icinga/cgi-bin\"' state=present"
+  tags: pnp4nagios
+  
+- name: Update configuration file
+  lineinfile: "dest=/etc/icinga/icinga.cfg line={{ item }} state=present"
+  with_items:
+    - '###PNP_Settings####'
+    - 'process_performance_data=1'
+    - "host_perfdata_file={{pnp4nagios.base_directory}}/var/host-perfdata"
+    - "service_perfdata_file={{pnp4nagios.base_directory}}/var/service-perfdata"
+    - 'service_perfdata_file_template=DATATYPE::SERVICEPERFDATA\tTIMET::$TIMET$\tHOSTNAME::$HOSTNAME$\tSERVICEDESC::$SERVICEDESC$\tSERVICEPERFDATA::$SERVICEPERFDATA$\tSERVICECHECKCOMMAND::$SERVICECHECKCOMMAND$\tHOSTSTATE::$HOSTSTATE$\tHOSTSTATETYPE::$HOSTSTATETYPE$\tSERVICESTATE::$SERVICESTATE$\tSERVICESTATETYPE::$SERVICESTATETYPE$'
+    - 'host_perfdata_file_template=DATATYPE::HOSTPERFDATA\tTIMET::$TIMET$\tHOSTNAME::$HOSTNAME$\tHOSTPERFDATA::$HOSTPERFDATA$\tHOSTCHECKCOMMAND::$HOSTCHECKCOMMAND$\tHOSTSTATE::$HOSTSTATE$\tHOSTSTATETYPE::$HOSTSTATETYPE$'
+    - "service_perfdata_file_mode=a"
+    - "host_perfdata_file_mode=a"
+    - "service_perfdata_file_processing_interval=30"
+    - "host_perfdata_file_processing_interval=30"
+    - "service_perfdata_file_processing_command=process-service-perfdata-file"
+    - "host_perfdata_file_processing_command=process-host-perfdata-file"
+  notify:
+    - restart npcd
+    - restart icinga
+  tags: pnp4nagios
+  
+- name: create pnp4nagios commands
+  template: "src=pnp_commands.cfg.j2 dest=/etc/icinga/objects/pnp_commands.cfg"
+  tags: pnp4nagios

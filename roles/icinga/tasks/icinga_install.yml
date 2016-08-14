@@ -1,0 +1,36 @@
+---
+- name: Add APT repository
+  apt_repository: repo='ppa:formorer/icinga'
+  when: ansible_distribution=='Ubuntu'
+  tags: icinga-install
+  
+- name: Install Icinga and other dependent packages
+  action: "{{ ansible_pkg_mgr }} pkg={{ item }} state=present"
+  with_items:
+    - icinga
+    - icinga-doc
+    - icinga-idoutils
+    - mysql-server
+    - libdbd-mysql
+    - mysql-client
+    - python-passlib
+    - python-pip
+  tags: icinga-install
+  
+- name: Install Boto package
+  shell: "pip install --upgrade {{ item.name }}=={{ item.version }};touch {{ var.cache.path }}/.{{item.name}} creates={{ var.cache.path }}/.{{item.name }}"
+  with_items:
+    - { name: boto,    version: '2.38.0' }
+  tags: icinga-install
+
+- name: Create htpasswd account for admin account
+  htpasswd: path=/etc/icinga/htpasswd.users name={{ icinga.admin_user }} password={{ icinga.admin_password }}
+  notify:
+    - restart apache
+  tags: icinga-install
+  
+- name: Update permissions for admin account
+  replace: "dest=/etc/icinga/cgi.cfg regexp='icingaadmin' replace={{ icinga.admin_user }}"
+  notify:
+    - restart apache
+  tags: icinga-install

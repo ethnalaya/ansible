@@ -1,0 +1,6 @@
+---
+nginx:
+  service_name: nginx
+  service_user: nginx
+  service_group: nginx
+  conf_directory: /etc/nginx/conf.d

@@ -22,4 +22,5 @@ jenkins:
    - { plugin_name: envinject, plugin_version: 1.92.1 }
    - { plugin_name: parameterized-trigger, plugin_version: 2.31 }
    - { plugin_name: jenkins-multijob-plugin, plugin_version: 1.21 }
-     
+   - { plugin_name: configurationslicing, plugin_version: 1.45}
+   - { plugin_name: ansible, plugin_version: 0.5}

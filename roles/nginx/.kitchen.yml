@@ -1,0 +1,31 @@
+---
+driver:
+  name: vagrant
+  network:
+    - - forwarded_port
+      - guest: 80
+        host: 80
+        auto_correct: true
+provisioner:
+  name: ansible_playbook
+  hosts: test-kitchen
+  require_chef_for_busser: false
+  ansible_verbose: false
+  roles_path: ../../roles
+verifier:
+  name: serverspec
+
+platforms:
+  - name: centos-core
+    driver_config: 
+      box: centos72
+
+  - name: centos-final
+    driver_config: 
+      box: centos67
+
+suites:
+  - name: default
+    verifier:
+      patterns:
+      - roles/nginx/test/integration/default/serverspec/nginx_spec.rb

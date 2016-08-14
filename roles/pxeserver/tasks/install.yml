@@ -1,0 +1,77 @@
+---
+- name: Install syslinux package
+  package: name={{item.package_name}}-{{item.package_version}}
+    state=present
+  with_items: "{{pxeserver.packages}}"
+
+- name: Update xinitd service
+  replace: dest=/etc/xinetd.d/tftp
+    regexp='yes'
+    replace='no'
+  notify:
+    - enable tftp
+
+- name: Copy tftp files from default location
+  shell: cp -rf /usr/share/syslinux/* {{pxeserver.base_directory}}
+    creates={{pxeserver.base_directory}}/pxelinux.0
+
+- name: create pxelinux directories
+  file: path="{{pxeserver.base_directory}}/{{item}}"
+    state=directory
+    recurse=true
+  with_items:
+    - 'pxelinux.cfg'
+    - 'images/CentOS/6.6'
+    - 'images/CentOS/7.2.1511'
+  become_user: sudo
+
+- name: Create http directory listing
+  template: src=mirror.conf.j2
+    dest={{nginx.conf_directory}}/mirror.conf
+    owner=root
+    group=root
+  notify: reload nginx
+
+- name: Copy vmlinuz and initrd images
+  get_url: url="http://{{mirror_server_name}}/{{item[0]}}/images/pxeboot/{{item[1]}}"
+    dest="{{pxeserver.base_directory}}/images/{{item[0]}}/{{item[1]}}"
+  with_nested:
+    - ['CentOS/6.6', 'CentOS/7.2.1511' ]
+    - [ 'vmlinuz', 'initrd.img']
+
+- name: Copy background images and default menu
+  copy: src="{{item}}"
+    dest={{pxeserver.base_directory}}/pxelinux.cfg/
+    force=yes
+  with_items:
+    - background.png
+    - centos7pxebg.png
+    - default
+  notify: restart tftp
+
+- name: Distribution specific menus
+  template: src={{item}}.j2
+    dest={{pxeserver.base_directory}}/pxelinux.cfg/{{item}}
+    mode=0755
+    force=yes
+  with_items:
+    - 'CentOS.menu'
+  notify: restart tftp
+
+- name: Manage kickstart files for all distributions
+  template: src=kickstart/{{item}}.j2
+    dest={{vsftpd.base_directory}}/kickstart/{{item}}
+  with_items:
+    - centos_6.6_baseserver.cfg
+    - centos_6.6_gnomedesktop.cfg
+    - centos_7.2.1511_baseserver.cfg
+    - centos_7.2.1511_gnomedesktop.cfg
+  notify: restart tftp
+
+- name: update firewalld settings - TFTP ports
+  firewalld: port="{{item}}/{{pxeserver.firewalld_service_protocol}}"
+    zone="{{firewall_zone}}"
+    permanent=true immediate=true
+    state=enabled
+  with_items: "{{pxeserver.firewalld_service_ports}}"
+  when: ansible_os_family == 'RedHat' and {{ansible_distribution_major_version}} >=7 and {{firewall_enabled}}

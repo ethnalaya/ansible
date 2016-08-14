@@ -1,0 +1,39 @@
+#{{banner}}
+install
+url --url ftp://{{base_server}}/CentOS/6.6
+lang en_US.UTF-8
+xconfig --startxonboot
+text
+reboot
+keyboard us
+timezone Asia/Calcutta
+network --device eth0 --bootproto dhcp
+rootpw welcome
+user --groups=wheel --name=rajeshj --password=$6$uNZZmKCbRCFAjGWi$VZ7cg8iQAHDfQZTkcWhqijIjHHSAzhA9b30kQRmGDqCqtVu1E6/bn.ChEFVr/KZ53.72NdAjkaXMHEQwGim5T. --iscrypted
+clearpart --all --drives=sda
+bootloader --location=mbr --driveorder=sda --append="rhgb quiet"
+#Disk Partitions
+part pv.19  --ondisk=sda --size=1 --grow
+part /boot --fstype ext4 --ondisk=sda --size=500
+volgroup VolGroup00 --pesize=4096 pv.19
+logvol swap --fstype swap --name=LogVolswap --vgname=VolGroup00 --size=528 --grow --maxsize=1056
+logvol / --fstype ext4 --name=LogVolroot --vgname=VolGroup00 --size=1024 --grow --maxsize=20000
+logvol /opt --fstype ext4 --name=LogVolopt --vgname=VolGroup00 --size=1024 --grow --maxsize=40000
+skipx
+%packages
+@core
+%post
+cd /etc/yum.repos.d
+rm -rf *.repo
+mkdir --parent /root/.ssh --mode=700
+cat <<EOF_AUTHORIZED_KEYS >/root/.ssh/authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQMPVMAyWHoE1cz8zDQphfgrg6OrnyCmVGxN0IJbn9vAhPQjPVW/bao2dwQes8BPzlVvoK99yf0M0DbGi8UJRI4kH6QKS+TVDGMIr+/5DmQ0VkJSHljXHNm6pAI+Wbvygm2d/1p4MQW6KKceRdVzWx0JvZZP00vCQ3TMbUlf3HHzNPqP1DWpdwMMzpTH0m0YnmE0pr5/uFC1gveXyRzSoc10ykXoxjtuFHcgAVrORxjXdUEWr97VTCwoqWCrqqKLpXTavZSbrMYWnBsKqZvxE9lNopJs0ZiE4ncc03HGOT0GbAcPe7aC7BIfXFw/M8n5k1JmVdNfAiJFB2WZAm7s+J root@server1.example.com
+EOF_AUTHORIZED_KEYS
+chmod 600 /root/.ssh/authorized_keys
+restorecon -R /root/.ssh/
+#wget -q -O centos6.repo ftp://{{base_server}}/repos/centos6.repo
+cat >> /etc/sudoers << EOF_SUDOERS
+### Allowing Wheel users with sudo access ####
+%wheel ALL=(ALL) NOPASSWD: ALL
+EOF_SUDOERS
+%end

@@ -1,0 +1,4 @@
+---
+- include: icinga_install.yml
+- include: pnp4nagios_install.yml
+- include: icinga_conf_updates.yml

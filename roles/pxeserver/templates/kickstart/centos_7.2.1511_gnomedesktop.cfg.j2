@@ -1,0 +1,43 @@
+#{{banner}}
+install
+url --url ftp://{{base_server}}/CentOS/7.2.1511
+lang en_US.UTF-8
+reboot
+keyboard --vckeymap=us --xlayouts='us'
+timezone Asia/Kolkata
+text
+eula --agreed
+services --enabled=NetworkManager,sshd
+rootpw --iscrypted $6$n1YQjTQ2NSp9VgHr$3zDkqkh2QidwHUhlsslLWu4e.zBUdFNhxIAc0Mmrea3mB90mG8hzzsxCyqVDLR0qtaIJTyE8f/7GqpiIdneyJ1
+user --groups=wheel --name=rajeshj --password=$6$uNZZmKCbRCFAjGWi$VZ7cg8iQAHDfQZTkcWhqijIjHHSAzhA9b30kQRmGDqCqtVu1E6/bn.ChEFVr/KZ53.72NdAjkaXMHEQwGim5T. --iscrypted
+xconfig  --startxonboot
+bootloader --location=mbr
+zerombr
+clearpart --all --initlabel
+part swap --asprimary --fstype="swap" --size=1024
+part /boot --fstype xfs --size=200
+part pv.01 --size=1 --grow
+volgroup rootvg01 pv.01
+logvol / --fstype xfs --name=lv01 --vgname=rootvg01 --size=1 --grow
+%packages
+@core
+@basic-desktop
+@desktop-platform
+@x11
+@fonts
+%end
+%post
+cd /etc/yum.repos.d
+rm -rf *.repo
+mkdir --parent /root/.ssh --mode=700
+cat <<EOF_AUTHORIZED_KEYS >/root/.ssh/authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQMPVMAyWHoE1cz8zDQphfgrg6OrnyCmVGxN0IJbn9vAhPQjPVW/bao2dwQes8BPzlVvoK99yf0M0DbGi8UJRI4kH6QKS+TVDGMIr+/5DmQ0VkJSHljXHNm6pAI+Wbvygm2d/1p4MQW6KKceRdVzWx0JvZZP00vCQ3TMbUlf3HHzNPqP1DWpdwMMzpTH0m0YnmE0pr5/uFC1gveXyRzSoc10ykXoxjtuFHcgAVrORxjXdUEWr97VTCwoqWCrqqKLpXTavZSbrMYWnBsKqZvxE9lNopJs0ZiE4ncc03HGOT0GbAcPe7aC7BIfXFw/M8n5k1JmVdNfAiJFB2WZAm7s+J root@server1.example.com
+EOF_AUTHORIZED_KEYS
+chmod 600 /root/.ssh/authorized_keys
+restorecon -R /root/.ssh/
+#wget -q -O centos6.repo ftp://{{base_server}}/repos/centos6.repo
+cat >> /etc/sudoers << EOF_SUDOERS
+### Allowing Wheel users with sudo access ####
+%wheel ALL=(ALL) NOPASSWD: ALL
+EOF_SUDOERS
+%end

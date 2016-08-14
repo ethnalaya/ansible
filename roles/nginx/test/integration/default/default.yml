@@ -1,0 +1,8 @@
+---
+- hosts: all
+  roles:
+    - nginx
+  vars_files:
+  - "group_vars/default.yml"
+  - "group_vars/ethnalaya.yml"
+  - "group_vars/{{ansible_os_family}}.yml"

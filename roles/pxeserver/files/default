@@ -1,0 +1,14 @@
+DEFAULT vesamenu.c32
+MENU BACKGROUND background.png
+MENU COLOR BORDER 0 #ffffffff #00000000 std
+MENU COLOR TITLE 0 #ffffffff #00000000 std
+MENU COLOR SEL 0 #ffffffff #ff000000 std
+MENU TITLE PXE Boot Menu
+PROMPT 0
+TIMEOUT 300
+ONTIMEOUT local
+NOESCAPE 1
+LABEL CentOS
+    MENU LABEL CentOS
+    KERNEL vesamenu.c32
+    APPEND pxelinux.cfg/CentOS.menu

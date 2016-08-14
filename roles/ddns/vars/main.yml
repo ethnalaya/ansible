@@ -4,3 +4,9 @@ dhcp:
     - { package_name: dhcp, package_version: "*" }
   
   firewalld_service_name: None
+named:
+  packages:
+    - { package_name: bind, package_version: "*" }
+  tables:
+    base_directory: /var/named
+      

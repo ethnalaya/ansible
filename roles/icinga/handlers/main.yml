@@ -1,0 +1,17 @@
+---
+- include: ../../server1/handlers/main.yml
+- name: start icinga
+  service: "name={{ icinga.service_name }} state=started enabled=true"
+  tags: icinga-service
+  
+- name: restart icinga
+  service: "name={{ icinga.service_name }} state=restarted"
+  tags: icinga-service
+
+- name: start npcd
+  service: "name=npcd state=started enabled=true"
+  tags: npcd-service
+  
+- name: restart npcd
+  service: "name=npcd state=restarted"
+  tags: npcd-service

@@ -1,1 +1,8 @@
-server1 ansible_ssh_host=192.168.0.1 ansible_ssh_user=root
+server1     ansible_ssh_host=192.168.0.1 ansible_ssh_user=root
+vmserver    ansible_ssh_host=192.168.0.2 ansible_ssh_user=root
+
+[baseserver]
+server1
+
+[database]
+vmserver

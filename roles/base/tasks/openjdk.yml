@@ -1,5 +1,6 @@
 ---
 - name: Install open jdk package
-  package: name={{item.package_name}}-{{item.package_version}} state=present
+  package: name={{item.package_name}}-{{item.package_version}}
+    state=present
   with_items: "{{openjdk.packages}}"
   when: ansible_os_family == 'RedHat'

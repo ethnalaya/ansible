@@ -1,15 +1,19 @@
 ---
 - name: install DHCP binaries
-  package: name={{item.package_name}}-{{item.package_version}} state=present
+  package: name={{item.package_name}}-{{item.package_version}}
+    state=present
   notify: enable dhcp
   with_items: "{{dhcp.packages}}"
 
-- name: update firewalld settings - DHCP service
-  firewalld:  service="{{dhcp.firewalld_service_name}}" zone="{{firewall_zone}}"
-              permanent=true immediate=true
-              state=enabled
-  when: ansible_os_family == 'RedHat' and {{ansible_distribution_major_version}} >=7 and {{firewall_enabled}}
-
 - name: update DHCP configuration changes
-  template: src=dhcpd.conf.j2 dest="{{dhcp.conf_file}}" owner="{{dhcp.service_user}}" group="{{dhcp.service_group}}" force=yes
+  template: src=dhcpd.conf.j2
+    dest={{dhcp.conf_file}}
+    owner={{dhcp.service_owner}} group={{dhcp.service_group}}
   notify: restart dhcp
+
+- name: update firewalld settings - DHCP service
+  firewalld:  service="{{dhcp.firewalld_service_name}}"
+    zone="{{firewall_zone}}"
+    permanent=true immediate=true
+    state=enabled
+  when: ansible_os_family == 'RedHat' and {{ansible_distribution_major_version}} >=7 and {{firewall_enabled}}

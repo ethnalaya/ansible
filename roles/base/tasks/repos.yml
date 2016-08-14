@@ -1,0 +1,34 @@
+---
+- block:
+  - name: Remove Centos Specific repos
+    file: path=/etc/yum.repos.d/{{item}}
+      state=absent
+    ignore_errors: true
+    with_items:
+      - [ CentOS-Base.repo,  CentOS-CR.repo, CentOS-Debuginfo.repo,  CentOS-Media.repo, CentOS-fasttrack.repo ]
+      - [ CentOS-SCLo-scl-rh.repo,  CentOS-SCLo-scl.repo,  CentOS-Sources.repo,  CentOS-Vault.repo ]
+
+  - name: Include local repositories
+    template: src="{{ansible_os_family}}.j2"
+      dest="/etc/yum.repos.d/{{org_name}}.repo"
+
+  - name: Add EPEL repository to External repos
+    yum_repository:
+      name: epel
+      description: EPEL Repo
+      file: external
+      baseurl: http://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+      gpgcheck: no
+
+  - name: Add RPMFORGE repo to External repos
+    yum_repository:
+      name: rpmforge
+      description: RPMforge YUM repo
+      file: external
+      baseurl: http://apt.sw.be/redhat/el7/en/$basearch/rpmforge
+      mirrorlist: http://mirrorlist.repoforge.org/el7/mirrors-rpmforge
+  when: ansible_pkg_mgr == 'yum'
+
+  rescue:
+    - name: Error Message
+      debug: msg='ERROR => Repo setups failed'

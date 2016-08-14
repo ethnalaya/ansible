@@ -1,0 +1,9 @@
+#{{ ansible_managed }}
+{% for _each_instance in my_instances.instances|sort %}
+define host {
+  use generic-host
+  host_name  {{ my_instances.instances[_each_instance]['internal_name'] }}
+  alias      {{ my_instances.instances[_each_instance]['short_name'] | capitalize }}
+  hostgroups {{ my_instances.instances[_each_instance]['instance_type'] }}
+}
+{%endfor%}

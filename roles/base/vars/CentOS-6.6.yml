@@ -1,0 +1,4 @@
+---
+ntp:
+  packages:
+    - { package_name: ntp, package_version: 4.2.6p5-10.el6.centos.1}
